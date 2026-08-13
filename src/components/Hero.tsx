@@ -11,7 +11,6 @@ import { type MouseEvent, useRef } from "react";
 import { eventInfo } from "../data/summit";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { ArrowButton } from "./ArrowButton";
-import { CursorOrb } from "./CursorOrb";
 import { Eyebrow } from "./Eyebrow";
 
 const headlineWords = eventInfo.name.split(" ");
@@ -124,8 +123,6 @@ export function Hero() {
         {/* Deep editorial read — darker than a typical corporate overlay, closer to the reference's near-black frame */}
         <div className="absolute inset-0 bg-gradient-to-b from-brand-navy-dark/75 via-brand-navy-dark/55 to-brand-navy-dark/95" />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-navy-dark via-transparent to-transparent" />
-        {/* Cursor-tracking 3D orb — the interactive centerpiece */}
-        {!reduceMotion && <CursorOrb containerRef={sectionRef} size={130} />}
       </motion.div>
 
       {/* Floating ambient glow orbs */}

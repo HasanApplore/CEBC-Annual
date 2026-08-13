@@ -4,11 +4,10 @@ import {
   useMotionValue,
   useSpring,
 } from "framer-motion";
-import { type MouseEvent, useRef, useState } from "react";
+import { type MouseEvent, useState } from "react";
 import { sponsors, type Sponsor, type SponsorTier } from "../data/summit";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { ArrowButton } from "./ArrowButton";
-import { CursorOrb } from "./CursorOrb";
 import { DetailModal, type DetailModalEntry } from "./DetailModal";
 import { Eyebrow } from "./Eyebrow";
 import { ScrollReveal, ScrollRevealGroup, staggerItemVariants } from "./ScrollReveal";
@@ -119,18 +118,10 @@ function SponsorCard({
 
 export function Sponsors() {
   const [selected, setSelected] = useState<DetailModalEntry | null>(null);
-  const sectionRef = useRef<HTMLElement>(null);
   const reduceMotion = usePrefersReducedMotion();
 
   return (
-    <section
-      id="sponsors"
-      ref={sectionRef}
-      className="relative overflow-hidden bg-white py-24"
-    >
-      {/* Roaming glass orb — the same Three.js sphere from the hero, now drifting behind the sponsor grid */}
-      {!reduceMotion && <CursorOrb containerRef={sectionRef} size={90} />}
-
+    <section id="sponsors" className="relative overflow-hidden bg-white py-24">
       <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
         <ScrollReveal className="text-center">
           <Eyebrow tone="dark">Partnership</Eyebrow>
