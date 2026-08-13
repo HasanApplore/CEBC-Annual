@@ -143,9 +143,9 @@ export function Footer() {
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         className="relative select-none text-center font-extrabold leading-none text-brand-green-light/15"
-        style={{ fontSize: "clamp(3.5rem, 10vw, 7rem)" }}
+        style={{ fontSize: "clamp(6rem, 18vw, 14rem)" }}
       >
-        <span className="block" style={{ transform: "translateY(20%)" }}>
+        <span className="block" style={{ transform: "translateY(22%)" }}>
           CEBC
         </span>
       </motion.div>

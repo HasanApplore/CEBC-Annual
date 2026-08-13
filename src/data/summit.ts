@@ -247,7 +247,7 @@ export const footerContent = {
     "Registered as a Not for Profit Company in Abu Dhabi Global Market (ADGM), the Clean Energy Business Council is the pre-eminent organization representing the private sector involved in the clean energy sector across the MENA region.",
   email: "info@cebcmena.com",
   address: "Abu Dhabi Global Market, ADGM",
-  backgroundVideoUrl: "/videos/12443259_1920_1080_60fps.mp4",
+  backgroundVideoUrl: "/videos/15791219_3840_2160_30fps.mp4",
   socials: [
     { platform: "Facebook", href: "#" },
     { platform: "Twitter", href: "#" },
