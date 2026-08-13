@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------- */
+/* CEBC brand design tokens — edit here to re-theme the whole site        */
+/* ---------------------------------------------------------------------- */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --color-brand-blue: #004aad;
+  --color-brand-navy: #1c2f5b;
+  --color-brand-navy-light: #2a3f6e;
+  /* Near-black navy — used for the deep, editorial dark sections. */
+  --color-brand-navy-dark: #0d1730;
+  --color-brand-green: #5b8c5a;
+  --color-brand-green-light: #6fa06d;
+  /* Pale green — pill badges and light-on-dark surfaces. */
+  --color-brand-green-pale: #d9ecd6;
+  --color-brand-bg: #f6f8f7;
+
+  --radius-card: 16px;
+}
+
+@layer base {
+  * {
+    scroll-behavior: smooth;
+  }
+
+  html,
+  body {
+    background-color: var(--color-brand-bg);
+    color: var(--color-brand-navy);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Consistent, visible keyboard focus ring across the site */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--color-brand-green);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Ken Burns slow zoom/pan for hero background */
+@keyframes ken-burns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.12) translate(-1%, -1%);
+  }
+}
+
+.animate-ken-burns {
+  animation: ken-burns 24s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ken-burns {
+    animation: none;
+  }
+}
+
+/* Frosted glass utility */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.glass-panel-light {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Tracked-out monospace label, used for nav links, eyebrows, buttons */
+.mono-label {
+  font-family: var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Scrollbar polish */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-brand-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-brand-navy-light);
+  border-radius: 999px;
+}

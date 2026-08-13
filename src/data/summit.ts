@@ -1,0 +1,258 @@
+/**
+ * ============================================================================
+ * SUMMIT CONTENT DATA
+ * ----------------------------------------------------------------------------
+ * Every editable piece of copy, agenda row, speaker, sponsor and partner for
+ * the 14th CEBC Annual Summit site lives in this one file. Non-developers can
+ * update the event by editing the arrays/objects below — no component code
+ * needs to change.
+ *
+ * Image fields accept either an imported asset or a plain URL string. Leave
+ * `photo` / `logo` as an empty string "" to fall back to the built-in
+ * placeholder visuals (navy gradient + "?" for speakers, tier-labelled cards
+ * for sponsors/partners).
+ * ============================================================================
+ */
+
+export interface EventInfo {
+  name: string;
+  organizer: string;
+  theme: string;
+  dateLabel: string;
+  timeLabel: string;
+  venue: string;
+  /** ISO timestamp (with timezone offset) the countdown counts down to. */
+  countdownTarget: string;
+  /** Placeholder slot — drop the real CEBC logo URL in here. */
+  logoUrl: string;
+  /** Fallback/poster image — used under prefers-reduced-motion and while the video loads. */
+  heroImageUrl: string;
+  /** Background video for the hero — leave empty to fall back to heroImageUrl only. */
+  heroVideoUrl: string;
+}
+
+export const eventInfo: EventInfo = {
+  name: "The 14th CEBC Annual Summit",
+  organizer: "Clean Energy Business Council MENA (CEBC)",
+  theme:
+    '"The Turning Point: Change, Resilience, and Economic Transformation in MENA"',
+  dateLabel: "01 October 2026",
+  timeLabel: "08:00 – 17:00 GST",
+  venue: "DIFC Conference Centre, Dubai, UAE",
+  countdownTarget: "2026-10-01T08:00:00+04:00",
+  // TODO: replace with the real CEBC logo asset URL.
+  logoUrl: "",
+  heroImageUrl: "/images/Gemini_Generated_Image_dzsqoedzsqoedzsq.png",
+  heroVideoUrl: "/videos/12443259_1920_1080_60fps.mp4",
+};
+
+export interface HeroLogo {
+  name: string;
+  /** Empty string falls back to a text placeholder chip. */
+  logo: string;
+}
+
+// Shown in the hero's scrolling logo strip. Swap in confirmed partner/sponsor
+// logos as they're finalised — this list is intentionally separate from the
+// full Sponsors/Partners sections below so the hero strip can be curated.
+export const heroLogoStrip: HeroLogo[] = Array.from({ length: 6 }, (_, i) => ({
+  name: `Partner ${i + 1}`,
+  logo: "",
+}));
+
+// Short sustainability statements shown alongside the hero logo strip.
+// TODO: swap these editorial taglines for vetted, sourced statistics once
+// CEBC's research/comms team confirms figures for the 14th edition.
+export const sustainabilityFacts: string[] = [
+  "Advancing MENA's clean energy transition",
+  "Building resilient, net-zero economies",
+  "Uniting government, finance & industry",
+  "Powering the region's next chapter",
+];
+
+export interface NavLink {
+  label: string;
+  href: string;
+}
+
+export const navLinks: NavLink[] = [
+  { label: "Agenda", href: "#agenda" },
+  { label: "Speakers", href: "#speakers" },
+  { label: "Sponsors", href: "#sponsors" },
+  { label: "Partners", href: "#partners" },
+  { label: "About", href: "#about" },
+];
+
+export interface AboutParagraph {
+  text: string;
+  bold?: boolean;
+}
+
+export const aboutContent = {
+  heading: "Built to Deliver",
+  subheading:
+    "The people, partnerships and platforms driving MENA's transition.",
+  paragraphs: [
+    {
+      text:
+        "The CEBC Annual Summit returns for its 14th edition at a defining moment for the region. As global pressure intensifies ahead of COP30, MENA is not just adapting, it's positioning itself to lead.",
+    },
+    {
+      text:
+        "This year's summit explores what it really takes to deliver net-zero strategies in practice; from decarbonising heavy industry to deploying AI in energy systems, and from unlocking climate finance to integrating mobility, hydrogen, and digital solutions.",
+    },
+    {
+      text:
+        "With voices from across government, finance and industry, the 14th CEBC Annual Summit is where the region's decision-makers come to confront complexity, share what's working and build what's next.",
+    },
+    {
+      text: "Because when it comes to clean energy leadership, MENA is built for this.",
+      bold: true,
+    },
+  ] satisfies AboutParagraph[],
+};
+
+export interface AgendaItem {
+  time: string;
+  title: string;
+  detail: string;
+  /** Short format/structure descriptors — keep generic until the real programme is confirmed. */
+  highlights: string[];
+}
+
+// Provisional schedule — real agenda pending confirmation. Keep this array
+// data-driven so rows can be added/edited without touching the Agenda component.
+export const agendaItems: AgendaItem[] = [
+  {
+    time: "08:00 – 09:00",
+    title: "Registration & Networking Breakfast",
+    detail: "Speakers to be announced",
+    highlights: [
+      "Format: Open networking",
+      "Includes: Breakfast & refreshments",
+      "Badge collection & welcome kits",
+    ],
+  },
+  {
+    time: "09:00 – 09:30",
+    title: "Opening Keynote: The Turning Point for MENA",
+    detail: "Speakers to be announced",
+    highlights: [
+      "Format: Keynote address",
+      "Focus: Regional energy transition outlook",
+      "Duration: 30 minutes",
+    ],
+  },
+  {
+    time: "09:30 – 10:30",
+    title: "Panel: Financing the Energy Transition",
+    detail: "Speakers to be announced",
+    highlights: [
+      "Format: Moderated panel discussion",
+      "Focus: Climate finance & investment",
+      "Includes: Audience Q&A",
+    ],
+  },
+  {
+    time: "Full Day",
+    title: "Complete session schedule to be published soon",
+    detail: "Speakers to be announced",
+    highlights: [
+      "Full-day programme across multiple tracks",
+      "Breakout sessions & workshops",
+      "Detailed timings coming soon",
+    ],
+  },
+];
+
+export interface Speaker {
+  name: string;
+  title: string;
+  org: string;
+  /** Empty string falls back to the navy "?" placeholder tile. */
+  photo: string;
+  linkedin?: string;
+}
+
+// Placeholder line-up — swap in confirmed speakers as they are announced.
+// Photos are stock placeholder portraits (pravatar.cc) purely so the layout
+// previews with real imagery; replace with confirmed headshots.
+export const speakers: Speaker[] = Array.from({ length: 6 }, (_, i) => ({
+  name: "Speaker to be announced",
+  title: "Job Title Pending",
+  org: "Organization Pending",
+  photo: `https://i.pravatar.cc/400?img=${[12, 33, 47, 5, 65, 25][i]}`,
+  linkedin: undefined,
+}));
+
+export interface Sponsor {
+  name: string;
+  logo: string;
+  description: string;
+  website: string;
+}
+
+export type SponsorTier = "Platinum" | "Gold" | "Silver";
+
+// Generates a simple lettermark "logo" via ui-avatars.com so sponsor/partner
+// cards preview with real imagery instead of empty tiles. Swap `logo` for a
+// confirmed brand asset URL once available.
+function placeholderLogo(label: string, bg: string) {
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(label)}&background=${bg}&color=fff&size=256&bold=true&font-size=0.33&length=2`;
+}
+
+// Expand each tier's array as sponsors are confirmed — layout adapts automatically.
+export const sponsors: Record<SponsorTier, Sponsor[]> = {
+  Platinum: Array.from({ length: 2 }, (_, i) => ({
+    name: `Platinum Sponsor ${i + 1}`,
+    logo: placeholderLogo(`Platinum Sponsor ${i + 1}`, "004AAD"),
+    description:
+      "Sponsor details to be announced. This placeholder card will be replaced with confirmed partner branding and copy.",
+    website: "",
+  })),
+  Gold: Array.from({ length: 3 }, (_, i) => ({
+    name: `Gold Sponsor ${i + 1}`,
+    logo: placeholderLogo(`Gold Sponsor ${i + 1}`, "1C2F5B"),
+    description:
+      "Sponsor details to be announced. This placeholder card will be replaced with confirmed partner branding and copy.",
+    website: "",
+  })),
+  Silver: Array.from({ length: 3 }, (_, i) => ({
+    name: `Silver Sponsor ${i + 1}`,
+    logo: placeholderLogo(`Silver Sponsor ${i + 1}`, "5B8C5A"),
+    description:
+      "Sponsor details to be announced. This placeholder card will be replaced with confirmed partner branding and copy.",
+    website: "",
+  })),
+};
+
+export interface Partner {
+  name: string;
+  logo: string;
+  description: string;
+  website: string;
+}
+
+// Add/remove entries freely — the Partners row lays out responsively.
+export const partners: Partner[] = Array.from({ length: 4 }, (_, i) => ({
+  name: `Partner Organization ${i + 1}`,
+  logo: placeholderLogo(`Partner Org ${i + 1}`, i % 2 === 0 ? "2A3F6E" : "6FA06D"),
+  description:
+    "Partner details to be announced. This placeholder card will be replaced with confirmed organization branding and copy.",
+  website: "",
+}));
+
+export const footerContent = {
+  about:
+    "Registered as a Not for Profit Company in Abu Dhabi Global Market (ADGM), the Clean Energy Business Council is the pre-eminent organization representing the private sector involved in the clean energy sector across the MENA region.",
+  email: "info@cebcmena.com",
+  address: "Abu Dhabi Global Market, ADGM",
+  backgroundVideoUrl: "/videos/12443259_1920_1080_60fps.mp4",
+  socials: [
+    { platform: "Facebook", href: "#" },
+    { platform: "Twitter", href: "#" },
+    { platform: "YouTube", href: "#" },
+    { platform: "LinkedIn", href: "#" },
+    { platform: "Instagram", href: "#" },
+  ] as { platform: string; href: string }[],
+};
