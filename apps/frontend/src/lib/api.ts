@@ -23,3 +23,16 @@ export async function apiPost<T>(endpoint: string, body: unknown): Promise<T> {
   if (!res.ok || !json.success) throw new Error(json.message || "Request failed");
   return json.data;
 }
+
+// Files uploaded via the admin panel are stored on the backend and come back
+// as a relative "/uploads/..." path — resolve that against the backend's
+// origin so the browser doesn't request it from the frontend's own origin.
+// Everything else (absolute URLs, and the site's own "/images"/"/videos"
+// public assets used as defaults) is left untouched.
+export function resolveMediaUrl(path: string | undefined | null): string {
+  if (!path) return "";
+  if (/^https?:\/\//.test(path)) return path;
+  if (!path.startsWith("/uploads/")) return path;
+  const origin = API_URL.replace(/\/api\/?$/, "");
+  return `${origin}${path}`;
+}

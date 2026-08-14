@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { apiGet } from "../lib/api";
+import { apiGet, resolveMediaUrl } from "../lib/api";
 import * as fallback from "../data/summit";
 import type {
   AboutParagraph,
@@ -55,6 +55,57 @@ const initialData: SiteData = {
   galleryImages: fallback.galleryImages,
 };
 
+// Resolves every media field the API can return (backend "/uploads/..."
+// paths become absolute) before it ever reaches a component.
+function resolveContentMedia(content: SiteContentApi): SiteContentApi {
+  return {
+    ...content,
+    heroLogoStrip: content.heroLogoStrip.map((h) => ({ ...h, logo: resolveMediaUrl(h.logo) })),
+    eventInfo: {
+      ...content.eventInfo,
+      logoUrl: resolveMediaUrl(content.eventInfo.logoUrl),
+      heroImageUrl: resolveMediaUrl(content.eventInfo.heroImageUrl),
+      heroVideoUrl: resolveMediaUrl(content.eventInfo.heroVideoUrl),
+      galleryHeroVideoUrl: resolveMediaUrl(content.eventInfo.galleryHeroVideoUrl),
+    },
+    aboutContent: {
+      ...content.aboutContent,
+      paragraphs: content.aboutContent.paragraphs.map((p) => ({
+        ...p,
+        image: p.image ? resolveMediaUrl(p.image) : p.image,
+      })),
+    },
+    footerContent: {
+      ...content.footerContent,
+      backgroundVideoUrl: resolveMediaUrl(content.footerContent.backgroundVideoUrl),
+    },
+  };
+}
+
+function resolveAgendaMedia(items: AgendaItem[]): AgendaItem[] {
+  return items.map((item) => ({ ...item, image: resolveMediaUrl(item.image) }));
+}
+
+function resolveSpeakerMedia(items: Speaker[]): Speaker[] {
+  return items.map((item) => ({ ...item, photo: resolveMediaUrl(item.photo) }));
+}
+
+function resolveSponsorMedia(sponsors: Record<SponsorTier, Sponsor[]>): Record<SponsorTier, Sponsor[]> {
+  const resolved = {} as Record<SponsorTier, Sponsor[]>;
+  for (const tier of Object.keys(sponsors) as SponsorTier[]) {
+    resolved[tier] = sponsors[tier].map((s) => ({ ...s, logo: resolveMediaUrl(s.logo) }));
+  }
+  return resolved;
+}
+
+function resolvePartnerMedia(items: Partner[]): Partner[] {
+  return items.map((item) => ({ ...item, logo: resolveMediaUrl(item.logo) }));
+}
+
+function resolveGalleryMedia(items: GalleryImage[]): GalleryImage[] {
+  return items.map((item) => ({ ...item, photo: resolveMediaUrl(item.photo) }));
+}
+
 const SiteDataContext = createContext<SiteData>(initialData);
 
 export function SiteDataProvider({ children }: { children: ReactNode }) {
@@ -78,15 +129,19 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
 
       setData((prev) => ({
         ...prev,
-        ...(content.status === "fulfilled" ? content.value : {}),
+        ...(content.status === "fulfilled" ? resolveContentMedia(content.value) : {}),
         ...(agendaItems.status === "fulfilled" && agendaItems.value.length
-          ? { agendaItems: agendaItems.value }
+          ? { agendaItems: resolveAgendaMedia(agendaItems.value) }
           : {}),
-        ...(speakers.status === "fulfilled" && speakers.value.length ? { speakers: speakers.value } : {}),
-        ...(sponsors.status === "fulfilled" ? { sponsors: sponsors.value } : {}),
-        ...(partners.status === "fulfilled" && partners.value.length ? { partners: partners.value } : {}),
+        ...(speakers.status === "fulfilled" && speakers.value.length
+          ? { speakers: resolveSpeakerMedia(speakers.value) }
+          : {}),
+        ...(sponsors.status === "fulfilled" ? { sponsors: resolveSponsorMedia(sponsors.value) } : {}),
+        ...(partners.status === "fulfilled" && partners.value.length
+          ? { partners: resolvePartnerMedia(partners.value) }
+          : {}),
         ...(galleryImages.status === "fulfilled" && galleryImages.value.length
-          ? { galleryImages: galleryImages.value }
+          ? { galleryImages: resolveGalleryMedia(galleryImages.value) }
           : {}),
       }));
 

@@ -39,8 +39,9 @@ npm run dev:frontend            # http://localhost:5173 — public site
 - **Gallery** — photos on the `/gallery` page
 - **Registrations** — read-only list of attendees who submitted the Register form, with CSV export
 
-Images/videos can be uploaded directly from the admin panel (stored on the
-backend under `apps/backend/uploads/`) or set as a plain URL.
+Images/videos can be uploaded directly from the admin panel — files go to
+AWS S3 (`applore-dev-projects-5`, `ap-south-1`, under the `cebc/uploads/`
+prefix) and come back as a public HTTPS URL — or set as a plain URL.
 
 ## Payments
 
@@ -51,8 +52,9 @@ require a schema change.
 
 ## Production notes
 
-- The backend's local-disk upload storage (`apps/backend/uploads/`) is fine
-  for development but won't persist across most hosting platforms' deploys —
-  swap in S3/Cloudinary before going to production.
-- Rotate `MONGODB_URI`/`JWT_SECRET`/the seeded admin password before shipping;
-  the current `.env` values were set up for local development.
+- Rotate `MONGODB_URI`/`JWT_SECRET`/the seeded admin password/AWS keys before
+  shipping; the current `.env` values were set up for local development.
+- The `applore-dev-projects-5` S3 bucket is shared across multiple projects —
+  this app only ever writes under the `cebc/uploads/` prefix within it.
+- `apps/backend/uploads/` (local disk) is no longer written to by new
+  uploads, but is still served for any files uploaded before the S3 switch.
