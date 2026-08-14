@@ -72,6 +72,11 @@ export const sustainabilityFacts: string[] = [
 
 export interface NavLink {
   label: string;
+  /**
+   * `#section-id` scrolls to a section on the home page (navigating home
+   * first if needed). Anything starting with `/` is a full route, rendered
+   * with react-router's `Link` — e.g. the Gallery page.
+   */
   href: string;
 }
 
@@ -81,11 +86,14 @@ export const navLinks: NavLink[] = [
   { label: "Sponsors", href: "#sponsors" },
   { label: "Partners", href: "#partners" },
   { label: "About", href: "#about" },
+  { label: "Gallery", href: "/gallery" },
 ];
 
 export interface AboutParagraph {
   text: string;
   bold?: boolean;
+  /** Thumbnail shown alongside this point — omitted on the closing pull-quote. */
+  image?: string;
 }
 
 export const aboutContent = {
@@ -96,14 +104,17 @@ export const aboutContent = {
     {
       text:
         "The CEBC Annual Summit returns for its 14th edition at a defining moment for the region. As global pressure intensifies ahead of COP30, MENA is not just adapting, it's positioning itself to lead.",
+      image: "https://picsum.photos/seed/cebc-about-momentum/400/400",
     },
     {
       text:
         "This year's summit explores what it really takes to deliver net-zero strategies in practice; from decarbonising heavy industry to deploying AI in energy systems, and from unlocking climate finance to integrating mobility, hydrogen, and digital solutions.",
+      image: "https://picsum.photos/seed/cebc-about-strategy/400/400",
     },
     {
       text:
         "With voices from across government, finance and industry, the 14th CEBC Annual Summit is where the region's decision-makers come to confront complexity, share what's working and build what's next.",
+      image: "https://picsum.photos/seed/cebc-about-voices/400/400",
     },
     {
       text: "Because when it comes to clean energy leadership, MENA is built for this.",
@@ -118,6 +129,7 @@ export interface AgendaItem {
   detail: string;
   /** Short format/structure descriptors — keep generic until the real programme is confirmed. */
   highlights: string[];
+  image: string;
 }
 
 // Provisional schedule — real agenda pending confirmation. Keep this array
@@ -132,6 +144,7 @@ export const agendaItems: AgendaItem[] = [
       "Includes: Breakfast & refreshments",
       "Badge collection & welcome kits",
     ],
+    image: "https://picsum.photos/seed/cebc-agenda-breakfast/700/500",
   },
   {
     time: "09:00 – 09:30",
@@ -142,6 +155,7 @@ export const agendaItems: AgendaItem[] = [
       "Focus: Regional energy transition outlook",
       "Duration: 30 minutes",
     ],
+    image: "https://picsum.photos/seed/cebc-agenda-keynote/700/500",
   },
   {
     time: "09:30 – 10:30",
@@ -152,6 +166,7 @@ export const agendaItems: AgendaItem[] = [
       "Focus: Climate finance & investment",
       "Includes: Audience Q&A",
     ],
+    image: "https://picsum.photos/seed/cebc-agenda-panel/700/500",
   },
   {
     time: "Full Day",
@@ -162,6 +177,7 @@ export const agendaItems: AgendaItem[] = [
       "Breakout sessions & workshops",
       "Detailed timings coming soon",
     ],
+    image: "https://picsum.photos/seed/cebc-agenda-fullday/700/500",
   },
 ];
 
@@ -241,6 +257,69 @@ export const partners: Partner[] = Array.from({ length: 4 }, (_, i) => ({
     "Partner details to be announced. This placeholder card will be replaced with confirmed organization branding and copy.",
   website: "",
 }));
+
+export const galleryContent = {
+  eyebrow: "Gallery",
+  heading: "Moments from CEBC",
+  subheading:
+    "The 14th edition hasn't happened yet — this gallery will fill up with photos from the day itself. Until then, here's a preview of the kind of moments we'll be capturing.",
+};
+
+export interface GalleryImage {
+  photo: string;
+  caption: string;
+  description: string;
+}
+
+// Picsum placeholders (deterministic via seed) stand in for real event
+// photography, which doesn't exist yet — the summit hasn't happened. Swap
+// each `photo` for a confirmed shot post-event; captions/descriptions can be edited freely.
+function placeholderPhoto(seed: string) {
+  return `https://picsum.photos/seed/${seed}/900/700`;
+}
+
+export const galleryImages: GalleryImage[] = [
+  {
+    photo: placeholderPhoto("cebc-keynote"),
+    caption: "Opening Keynote",
+    description: "Setting the tone for the day ahead.",
+  },
+  {
+    photo: placeholderPhoto("cebc-panel"),
+    caption: "Panel Discussion",
+    description: "Industry leaders on the future of clean energy.",
+  },
+  {
+    photo: placeholderPhoto("cebc-networking"),
+    caption: "Networking Breakfast",
+    description: "Where the real conversations begin.",
+  },
+  {
+    photo: placeholderPhoto("cebc-audience"),
+    caption: "Delegate Floor",
+    description: "Hundreds of delegates from across the MENA region.",
+  },
+  {
+    photo: placeholderPhoto("cebc-signing"),
+    caption: "Partnership Signing",
+    description: "New alliances formed on the summit floor.",
+  },
+  {
+    photo: placeholderPhoto("cebc-awards"),
+    caption: "Awards Moment",
+    description: "Recognizing the sector's boldest contributors.",
+  },
+  {
+    photo: placeholderPhoto("cebc-exhibition"),
+    caption: "Exhibition Hall",
+    description: "Innovation on display, booth by booth.",
+  },
+  {
+    photo: placeholderPhoto("cebc-closing"),
+    caption: "Closing Remarks",
+    description: "Reflections before the next turning point.",
+  },
+];
 
 export const footerContent = {
   about:

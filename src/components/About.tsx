@@ -1,9 +1,11 @@
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { type MouseEvent } from "react";
 import { aboutContent } from "../data/summit";
 import { Eyebrow } from "./Eyebrow";
 import { ScrollReveal, ScrollRevealGroup, staggerItemVariants } from "./ScrollReveal";
+
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 // Split into numbered rows (regular paragraphs) + a closing pull-quote (the bold line).
 const rows = aboutContent.paragraphs.filter((p) => !p.bold);
@@ -12,10 +14,11 @@ const closingLine = aboutContent.paragraphs.find((p) => p.bold);
 interface RowProps {
   index: number;
   text: string;
+  image?: string;
 }
 
-/** A single numbered row with a cursor-tracked spotlight and a reveal-on-hover accent. */
-function AboutRow({ index, text }: RowProps) {
+/** A single numbered row with a cursor-tracked spotlight, a reveal-on-hover accent, and a thumbnail. */
+function AboutRow({ index, text, image }: RowProps) {
   const spotX = useMotionValue(-9999);
   const spotY = useMotionValue(-9999);
   const spotlight = useMotionTemplate`radial-gradient(260px circle at ${spotX}px ${spotY}px, rgba(111,160,109,0.14), transparent 70%)`;
@@ -30,7 +33,7 @@ function AboutRow({ index, text }: RowProps) {
     <motion.div
       variants={staggerItemVariants}
       onMouseMove={handleMove}
-      className="group relative grid grid-cols-[3rem_1fr_auto] items-start gap-4 overflow-hidden border-b border-white/10 py-7 sm:grid-cols-[5rem_1fr_auto] sm:gap-8 sm:py-8"
+      className="group relative flex flex-col gap-5 overflow-hidden border-b border-white/10 py-7 sm:flex-row sm:items-center sm:gap-8 sm:py-8"
     >
       {/* Cursor-tracked spotlight illusion */}
       <motion.div
@@ -46,27 +49,43 @@ function AboutRow({ index, text }: RowProps) {
         style={{ height: "100%" }}
       />
 
-      <motion.span
-        className="mono-label relative pt-1 text-sm text-brand-green-light/70 transition-all duration-300 group-hover:pl-2 group-hover:text-transparent"
-        style={{
-          backgroundImage: "linear-gradient(90deg, #6fa06d, #004aad)",
-          WebkitBackgroundClip: "text",
-          backgroundClip: "text",
-        }}
-      >
-        {String(index + 1).padStart(2, "0")}
-      </motion.span>
+      <div className="relative flex flex-1 items-start gap-4 sm:gap-8">
+        <motion.span
+          className="mono-label pt-1 text-sm text-brand-green-light/70 transition-all duration-300 group-hover:pl-2 group-hover:text-transparent"
+          style={{
+            backgroundImage: "linear-gradient(90deg, #6fa06d, #004aad)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+          }}
+        >
+          {String(index + 1).padStart(2, "0")}
+        </motion.span>
 
-      <p className="relative max-w-3xl pl-3 text-base leading-relaxed text-white/80 transition-all duration-300 group-hover:pl-5 group-hover:text-white sm:text-lg">
-        {text}
-      </p>
+        <p className="max-w-3xl pl-3 text-base leading-relaxed text-white/80 transition-all duration-300 group-hover:pl-5 group-hover:text-white sm:text-lg">
+          {text}
+        </p>
+      </div>
 
-      <motion.span
-        aria-hidden
-        className="relative mt-2 flex -translate-x-2 items-center text-brand-green-light opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
-      >
-        <ArrowRight size={18} />
-      </motion.span>
+      {image && (
+        <motion.div
+          initial={{ opacity: 0, scale: 1.15 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.8, ease: EASE }}
+          className="relative h-40 w-full shrink-0 overflow-hidden rounded-xl border border-white/10 sm:h-24 sm:w-36"
+        >
+          <img
+            src={image}
+            alt=""
+            role="presentation"
+            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-navy-dark/70 via-brand-navy-dark/0 to-transparent" />
+          <span className="pointer-events-none absolute bottom-2 right-2 flex h-7 w-7 translate-x-1 translate-y-1 items-center justify-center rounded-full bg-white/15 text-white opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:opacity-100">
+            <ArrowUpRight size={13} />
+          </span>
+        </motion.div>
+      )}
     </motion.div>
   );
 }
@@ -100,7 +119,7 @@ export function About() {
 
         <ScrollRevealGroup className="mt-14 border-t border-white/10">
           {rows.map((row, i) => (
-            <AboutRow key={i} index={i} text={row.text} />
+            <AboutRow key={i} index={i} text={row.text} image={row.image} />
           ))}
         </ScrollRevealGroup>
 

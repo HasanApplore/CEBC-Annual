@@ -86,24 +86,36 @@ function AgendaRow({ item, index, reduceMotion }: AgendaRowProps) {
           style={{ background: spotlight }}
         />
 
-        <div className="relative flex items-center justify-between gap-3">
-          <span className="mono-label flex items-center gap-2 text-xs font-bold text-brand-blue">
-            <motion.span
-              whileHover={reduceMotion ? undefined : { rotate: 360 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="inline-flex"
-            >
-              <Clock size={14} />
-            </motion.span>
-            {item.time}
-          </span>
-          <span className="mono-label text-[11px] text-brand-navy/30 transition-colors duration-300 group-hover:text-brand-green">
-            {String(index + 1).padStart(2, "0")}
-          </span>
+        {/* Image banner — bleeds to the card's edges via negative margin, title/time overlaid on top */}
+        <div className="relative -m-5 mb-4 h-36 overflow-hidden sm:-m-6 sm:mb-5 sm:h-40">
+          <img
+            src={item.image}
+            alt=""
+            role="presentation"
+            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-navy-dark/85 via-brand-navy-dark/25 to-brand-navy-dark/10" />
+
+          <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-3">
+            <span className="mono-label flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold text-white backdrop-blur-sm">
+              <motion.span
+                whileHover={reduceMotion ? undefined : { rotate: 360 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="inline-flex"
+              >
+                <Clock size={12} />
+              </motion.span>
+              {item.time}
+            </span>
+            <span className="mono-label text-[11px] font-semibold text-white/60 transition-colors duration-300 group-hover:text-brand-green-light">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+          </div>
+
+          <h3 className="absolute inset-x-4 bottom-3 text-lg font-semibold leading-snug text-white">
+            {item.title}
+          </h3>
         </div>
-        <h3 className="relative mt-3 text-lg font-semibold text-brand-navy">
-          {item.title}
-        </h3>
 
         <ul className="relative mt-3 space-y-1.5">
           {item.highlights.map((highlight, hi) => (

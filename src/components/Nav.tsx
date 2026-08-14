@@ -1,16 +1,21 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useActiveSection } from "../hooks/useActiveSection";
 import { eventInfo, navLinks } from "../data/summit";
 import { ArrowButton } from "./ArrowButton";
 
-const sectionIds = navLinks.map((link) => link.href.replace("#", ""));
+const sectionIds = navLinks
+  .filter((link) => link.href.startsWith("#"))
+  .map((link) => link.href.replace("#", ""));
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const activeId = useActiveSection(sectionIds);
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 48);
@@ -26,6 +31,14 @@ export function Nav() {
     };
   }, [mobileOpen]);
 
+  // Section anchors (#agenda, #speakers, …) only work while already on the
+  // home page — from anywhere else they need to route home first, hash and
+  // all, so HomePage's scroll-to-hash effect can pick it up on arrival.
+  const targetFor = (href: string) => (href.startsWith("#") && !isHome ? `/${href}` : href);
+
+  const isActive = (href: string) =>
+    href.startsWith("#") ? isHome && activeId === href.slice(1) : location.pathname === href;
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
@@ -35,7 +48,7 @@ export function Nav() {
       }`}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
-        <a href="#top" className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-3">
           {/* Placeholder slot — swap in the real CEBC logo URL via eventInfo.logoUrl */}
           {eventInfo.logoUrl ? (
             <img src={eventInfo.logoUrl} alt="CEBC logo" className="h-9 w-auto" />
@@ -47,31 +60,31 @@ export function Nav() {
           <span className="mono-label hidden text-xs font-semibold text-white sm:inline">
             Annual Summit
           </span>
-        </a>
+        </Link>
 
         <div className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => {
-            const isActive = activeId === link.href.replace("#", "");
+            const active = isActive(link.href);
             return (
-              <a
+              <Link
                 key={link.href}
-                href={link.href}
+                to={targetFor(link.href)}
                 className={`mono-label relative text-xs font-medium transition-colors duration-200 ${
-                  isActive ? "text-brand-green-light" : "text-white/80 hover:text-white"
+                  active ? "text-brand-green-light" : "text-white/80 hover:text-white"
                 }`}
               >
                 {link.label}
-                {isActive && (
+                {active && (
                   <motion.span
                     layoutId="nav-underline"
                     className="absolute -bottom-1.5 left-0 h-0.5 w-full rounded-full bg-brand-green-light"
                     transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                   />
                 )}
-              </a>
+              </Link>
             );
           })}
-          <ArrowButton href="#register" variant="outline">
+          <ArrowButton href={targetFor("#register")} variant="outline">
             Register
           </ArrowButton>
         </div>
@@ -98,28 +111,34 @@ export function Nav() {
           >
             <div className="flex flex-col gap-1 px-5 pb-6 pt-2">
               {navLinks.map((link, i) => (
-                <motion.a
+                <motion.div
                   key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
                   initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05, duration: 0.3 }}
-                  className="mono-label rounded-lg px-3 py-3 text-sm font-medium text-white/85 transition-colors hover:bg-white/10 hover:text-white"
                 >
-                  {link.label}
-                </motion.a>
+                  <Link
+                    to={targetFor(link.href)}
+                    onClick={() => setMobileOpen(false)}
+                    className="mono-label block rounded-lg px-3 py-3 text-sm font-medium text-white/85 transition-colors hover:bg-white/10 hover:text-white"
+                  >
+                    {link.label}
+                  </Link>
+                </motion.div>
               ))}
-              <motion.a
-                href="#register"
-                onClick={() => setMobileOpen(false)}
+              <motion.div
                 initial={{ opacity: 0, x: -16 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: navLinks.length * 0.05, duration: 0.3 }}
-                className="mono-label mt-2 rounded-lg bg-brand-green px-5 py-3 text-center text-sm font-semibold text-white"
               >
-                Register
-              </motion.a>
+                <Link
+                  to={targetFor("#register")}
+                  onClick={() => setMobileOpen(false)}
+                  className="mono-label mt-2 block rounded-lg bg-brand-green px-5 py-3 text-center text-sm font-semibold text-white"
+                >
+                  Register
+                </Link>
+              </motion.div>
             </div>
           </motion.div>
         )}
