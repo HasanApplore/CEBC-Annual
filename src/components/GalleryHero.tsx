@@ -93,7 +93,7 @@ export function GalleryHero() {
       {/* Full-bleed banner, extending behind the nav — same treatment as the home Hero,
           so the transparent nav reads white-on-image instead of white-on-page-background. */}
       <div className="absolute inset-x-0 top-0 h-[62vh] overflow-hidden sm:h-[72vh]">
-        {eventInfo.heroVideoUrl && !reduceMotion ? (
+        {eventInfo.galleryHeroVideoUrl && !reduceMotion ? (
           <video
             autoPlay
             muted
@@ -103,7 +103,7 @@ export function GalleryHero() {
             aria-hidden
             className="h-full w-full object-cover"
           >
-            <source src={eventInfo.heroVideoUrl} type="video/mp4" />
+            <source src={eventInfo.galleryHeroVideoUrl} type="video/mp4" />
           </video>
         ) : (
           <img

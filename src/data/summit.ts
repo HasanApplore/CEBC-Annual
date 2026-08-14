@@ -27,8 +27,10 @@ export interface EventInfo {
   logoUrl: string;
   /** Fallback/poster image — used under prefers-reduced-motion and while the video loads. */
   heroImageUrl: string;
-  /** Background video for the hero — leave empty to fall back to heroImageUrl only. */
+  /** Background video for the homepage hero — leave empty to fall back to heroImageUrl only. */
   heroVideoUrl: string;
+  /** Background video for the Gallery page hero — separate from heroVideoUrl by design. */
+  galleryHeroVideoUrl: string;
 }
 
 export const eventInfo: EventInfo = {
@@ -44,6 +46,7 @@ export const eventInfo: EventInfo = {
   logoUrl: "",
   heroImageUrl: "/images/Gemini_Generated_Image_dzsqoedzsqoedzsq.png",
   heroVideoUrl: "/videos/12443259_1920_1080_60fps.mp4",
+  galleryHeroVideoUrl: "/videos/cebc_final_6adf8221ce.mp4",
 };
 
 export interface HeroLogo {
