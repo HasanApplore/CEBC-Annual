@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Calendar, Clock3, Hourglass, Timer } from "lucide-react";
-import { eventInfo } from "../data/summit";
+import { useSiteData } from "../context/SiteDataContext";
 import { useCountdown } from "../hooks/useCountdown";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { Eyebrow } from "./Eyebrow";
@@ -124,6 +124,7 @@ function StatBox({ label, value, icon: Icon, accent, reduceMotion }: StatBoxProp
 }
 
 export function Countdown() {
+  const { eventInfo } = useSiteData();
   const remaining = useCountdown(eventInfo.countdownTarget);
   const reduceMotion = usePrefersReducedMotion();
 

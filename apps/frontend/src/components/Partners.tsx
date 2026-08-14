@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { partners, type Partner } from "../data/summit";
+import type { Partner } from "../data/summit";
+import { useSiteData } from "../context/SiteDataContext";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { DetailModal, type DetailModalEntry } from "./DetailModal";
 import { Eyebrow } from "./Eyebrow";
@@ -56,6 +57,7 @@ interface MarqueeRowProps {
   direction: "left" | "right";
   reduceMotion: boolean;
   onSelect: (entry: DetailModalEntry) => void;
+  partners: Partner[];
 }
 
 // Four copies back-to-back keep the strip wider than any viewport and make
@@ -64,7 +66,7 @@ interface MarqueeRowProps {
 const REPEAT_COUNT = 4;
 const LOOP_FRACTION = 100 / REPEAT_COUNT;
 
-function MarqueeRow({ rowIndex, direction, reduceMotion, onSelect }: MarqueeRowProps) {
+function MarqueeRow({ rowIndex, direction, reduceMotion, onSelect, partners }: MarqueeRowProps) {
   const items = Array.from({ length: REPEAT_COUNT }, () => partners).flat();
 
   return (
@@ -102,6 +104,7 @@ function MarqueeRow({ rowIndex, direction, reduceMotion, onSelect }: MarqueeRowP
 }
 
 export function Partners() {
+  const { partners } = useSiteData();
   const [selected, setSelected] = useState<DetailModalEntry | null>(null);
   const reduceMotion = usePrefersReducedMotion();
 
@@ -120,8 +123,8 @@ export function Partners() {
       </div>
 
       <ScrollReveal delay={0.1} className="mt-14 flex flex-col">
-        <MarqueeRow rowIndex={0} direction="left" reduceMotion={reduceMotion} onSelect={setSelected} />
-        <MarqueeRow rowIndex={1} direction="right" reduceMotion={reduceMotion} onSelect={setSelected} />
+        <MarqueeRow rowIndex={0} direction="left" reduceMotion={reduceMotion} onSelect={setSelected} partners={partners} />
+        <MarqueeRow rowIndex={1} direction="right" reduceMotion={reduceMotion} onSelect={setSelected} partners={partners} />
       </ScrollReveal>
 
       <DetailModal entry={selected} onClose={() => setSelected(null)} />

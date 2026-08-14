@@ -5,7 +5,8 @@ import {
   useSpring,
 } from "framer-motion";
 import { type MouseEvent, useState } from "react";
-import { sponsors, type Sponsor, type SponsorTier } from "../data/summit";
+import type { Sponsor, SponsorTier } from "../data/summit";
+import { useSiteData } from "../context/SiteDataContext";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { ArrowButton } from "./ArrowButton";
 import { DetailModal, type DetailModalEntry } from "./DetailModal";
@@ -117,6 +118,7 @@ function SponsorCard({
 }
 
 export function Sponsors() {
+  const { sponsors } = useSiteData();
   const [selected, setSelected] = useState<DetailModalEntry | null>(null);
   const reduceMotion = usePrefersReducedMotion();
 

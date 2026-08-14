@@ -1,7 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, CreditCard, Loader2, MapPin } from "lucide-react";
 import { type FormEvent, useState } from "react";
-import { eventInfo } from "../data/summit";
+import { useSiteData } from "../context/SiteDataContext";
+import { apiPost } from "../lib/api";
 import { ArrowButton } from "./ArrowButton";
 import { Eyebrow } from "./Eyebrow";
 import { ScrollReveal } from "./ScrollReveal";
@@ -100,11 +101,13 @@ function Field({ label, name, required, type = "text", value, error, onChange }:
 }
 
 export function Register() {
+  const { eventInfo } = useSiteData();
   const [step, setStep] = useState<Step>("details");
   const [form, setForm] = useState<FormState>(initialForm);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const updateField = (name: keyof FormState, value: string) => {
     setForm((f) => ({ ...f, [name]: value }));
@@ -123,9 +126,20 @@ export function Register() {
     return Object.keys(nextErrors).length === 0;
   };
 
-  const handleDetailsSubmit = (e: FormEvent) => {
+  const handleDetailsSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (validateDetails()) setStep("payment");
+    if (!validateDetails()) return;
+
+    setSubmitError("");
+    setSubmitting(true);
+    try {
+      await apiPost("/registrations", form);
+      setStep("payment");
+    } catch {
+      setSubmitError("We couldn't save your details. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handlePaymentContinue = () => {
@@ -141,6 +155,7 @@ export function Register() {
   const resetFlow = () => {
     setForm(initialForm);
     setErrors({});
+    setSubmitError("");
     setStep("details");
     setShowForm(false);
   };
@@ -203,9 +218,13 @@ export function Register() {
                     <Field label="Country" name="country" value={form.country} onChange={updateField} />
                     <Field label="Phone" name="phone" type="tel" value={form.phone} onChange={updateField} />
 
+                    {submitError && (
+                      <p className="col-span-full text-sm text-red-300">{submitError}</p>
+                    )}
+
                     <div className="col-span-full mt-2 flex justify-end">
-                      <ArrowButton type="submit" variant="solid">
-                        Continue to Payment
+                      <ArrowButton type="submit" variant="solid" disabled={submitting}>
+                        {submitting ? "Submitting…" : "Continue to Payment"}
                       </ArrowButton>
                     </div>
                   </motion.form>

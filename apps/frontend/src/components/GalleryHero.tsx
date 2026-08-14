@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { eventInfo, galleryContent, galleryImages } from "../data/summit";
+import { useSiteData } from "../context/SiteDataContext";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -46,7 +46,13 @@ function Polaroid({ src, caption, rotate, delay, className = "" }: PolaroidProps
 }
 
 /** The centrepiece scalloped seal — headline + a short stat line, echoing a stamped ticket. */
-function CollageBadge({ delay }: { delay: number }) {
+function CollageBadge({
+  delay,
+  galleryContent,
+}: {
+  delay: number;
+  galleryContent: { eyebrow: string; heading: string };
+}) {
   const reduceMotion = usePrefersReducedMotion();
 
   return (
@@ -86,6 +92,7 @@ function CollageBadge({ delay }: { delay: number }) {
 }
 
 export function GalleryHero() {
+  const { eventInfo, galleryContent, galleryImages } = useSiteData();
   const reduceMotion = usePrefersReducedMotion();
 
   return (
@@ -132,7 +139,7 @@ export function GalleryHero() {
               />
             </div>
 
-            <CollageBadge delay={0.35} />
+            <CollageBadge delay={0.35} galleryContent={galleryContent} />
 
             <div className="flex gap-4 lg:rotate-2">
               <Polaroid

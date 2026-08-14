@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 import { Link2, User } from "lucide-react";
-import { speakers } from "../data/summit";
+import { useSiteData } from "../context/SiteDataContext";
 import { Eyebrow } from "./Eyebrow";
 import { ScrollReveal, ScrollRevealGroup, staggerItemVariants } from "./ScrollReveal";
 
 export function Speakers() {
+  const { speakers } = useSiteData();
   return (
     <section id="speakers" className="bg-brand-bg py-24">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">

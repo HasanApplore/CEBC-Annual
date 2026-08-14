@@ -5,11 +5,13 @@ import { Footer } from "../components/Footer";
 import { GalleryCarousel } from "../components/GalleryCarousel";
 import { GalleryHero } from "../components/GalleryHero";
 import { ScrollRevealGroup, staggerItemVariants } from "../components/ScrollReveal";
-import { footerContent, galleryImages } from "../data/summit";
+import type { GalleryImage } from "../data/summit";
+import { useSiteData } from "../context/SiteDataContext";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 
 /** Same navy + sustainability-video background the homepage footer sits on (see Home.tsx's ClosingSection). */
 function FooterSection() {
+  const { footerContent } = useSiteData();
   const reduceMotion = usePrefersReducedMotion();
 
   return (
@@ -39,10 +41,12 @@ function Lightbox({
   index,
   onClose,
   onStep,
+  galleryImages,
 }: {
   index: number | null;
   onClose: () => void;
   onStep: (delta: 1 | -1) => void;
+  galleryImages: GalleryImage[];
 }) {
   useEffect(() => {
     if (index === null) return;
@@ -133,6 +137,7 @@ function Lightbox({
 }
 
 export function GalleryPage() {
+  const { galleryImages } = useSiteData();
   const [selected, setSelected] = useState<number | null>(null);
 
   const step = (delta: 1 | -1) => {
@@ -204,7 +209,7 @@ export function GalleryPage() {
 
       <FooterSection />
 
-      <Lightbox index={selected} onClose={() => setSelected(null)} onStep={step} />
+      <Lightbox index={selected} onClose={() => setSelected(null)} onStep={step} galleryImages={galleryImages} />
     </main>
   );
 }

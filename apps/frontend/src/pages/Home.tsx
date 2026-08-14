@@ -9,7 +9,7 @@ import { Partners } from "../components/Partners";
 import { Register } from "../components/Register";
 import { Sponsors } from "../components/Sponsors";
 import { Speakers } from "../components/Speakers";
-import { footerContent } from "../data/summit";
+import { useSiteData } from "../context/SiteDataContext";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 
 /**
@@ -18,6 +18,7 @@ import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
  * so the video plays uninterrupted across the seam between the two sections.
  */
 function ClosingSection() {
+  const { footerContent } = useSiteData();
   const reduceMotion = usePrefersReducedMotion();
 
   return (

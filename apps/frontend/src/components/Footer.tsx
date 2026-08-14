@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowUp, Mail, MapPin } from "lucide-react";
 import type { SVGProps } from "react";
-import { eventInfo, footerContent, navLinks } from "../data/summit";
+import { useSiteData } from "../context/SiteDataContext";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 
 /**
@@ -47,6 +47,7 @@ const socialIcons: Record<string, (props: SVGProps<SVGSVGElement>) => React.JSX.
  * both sections shows through continuously across the seam between them.
  */
 export function Footer() {
+  const { eventInfo, footerContent, navLinks } = useSiteData();
   const reduceMotion = usePrefersReducedMotion();
 
   return (

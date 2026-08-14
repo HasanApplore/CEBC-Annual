@@ -1,7 +1,8 @@
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 import { CheckCircle2, Clock } from "lucide-react";
 import { type MouseEvent, useRef } from "react";
-import { agendaItems, eventInfo, type AgendaItem } from "../data/summit";
+import type { AgendaItem } from "../data/summit";
+import { useSiteData } from "../context/SiteDataContext";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { ArrowButton } from "./ArrowButton";
 import { Eyebrow } from "./Eyebrow";
@@ -146,6 +147,7 @@ function AgendaRow({ item, index, reduceMotion }: AgendaRowProps) {
 }
 
 export function Agenda() {
+  const { agendaItems, eventInfo } = useSiteData();
   const timelineRef = useRef<HTMLDivElement>(null);
   const reduceMotion = usePrefersReducedMotion();
 

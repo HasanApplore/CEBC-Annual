@@ -8,18 +8,10 @@ import {
 } from "framer-motion";
 import { Calendar, Clock, MapPin, MousePointer2, Sparkles } from "lucide-react";
 import { type MouseEvent, useRef } from "react";
-import { eventInfo } from "../data/summit";
+import { useSiteData } from "../context/SiteDataContext";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { ArrowButton } from "./ArrowButton";
 import { Eyebrow } from "./Eyebrow";
-
-const headlineWords = eventInfo.name.split(" ");
-
-const infoItems = [
-  { icon: Calendar, label: eventInfo.dateLabel },
-  { icon: MapPin, label: eventInfo.venue },
-  { icon: Clock, label: eventInfo.timeLabel },
-];
 
 // Keywords for the scrolling marquee band — repeated twice below for a seamless loop.
 const marqueeWords = [
@@ -47,6 +39,14 @@ function useCursorReveal<T extends HTMLElement>(radius: number) {
 }
 
 export function Hero() {
+  const { eventInfo } = useSiteData();
+  const headlineWords = eventInfo.name.split(" ");
+  const infoItems = [
+    { icon: Calendar, label: eventInfo.dateLabel },
+    { icon: MapPin, label: eventInfo.venue },
+    { icon: Clock, label: eventInfo.timeLabel },
+  ];
+
   const sectionRef = useRef<HTMLElement>(null);
   const reduceMotion = usePrefersReducedMotion();
 

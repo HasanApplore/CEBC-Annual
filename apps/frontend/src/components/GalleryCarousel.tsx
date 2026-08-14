@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useRef } from "react";
-import { galleryImages } from "../data/summit";
+import { useSiteData } from "../context/SiteDataContext";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { ArrowButton } from "./ArrowButton";
 import { Eyebrow } from "./Eyebrow";
@@ -16,6 +16,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
  * reference's literal Italian scrapbook styling.
  */
 export function GalleryCarousel({ onSelect }: { onSelect: (index: number) => void }) {
+  const { galleryImages } = useSiteData();
   const reduceMotion = usePrefersReducedMotion();
   const trackRef = useRef<HTMLDivElement>(null);
 

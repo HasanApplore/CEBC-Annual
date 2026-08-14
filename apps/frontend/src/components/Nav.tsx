@@ -3,16 +3,16 @@ import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useActiveSection } from "../hooks/useActiveSection";
-import { eventInfo, navLinks } from "../data/summit";
+import { useSiteData } from "../context/SiteDataContext";
 import { ArrowButton } from "./ArrowButton";
 
-const sectionIds = navLinks
-  .filter((link) => link.href.startsWith("#"))
-  .map((link) => link.href.replace("#", ""));
-
 export function Nav() {
+  const { eventInfo, navLinks } = useSiteData();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const sectionIds = navLinks
+    .filter((link) => link.href.startsWith("#"))
+    .map((link) => link.href.replace("#", ""));
   const activeId = useActiveSection(sectionIds);
   const location = useLocation();
   const isHome = location.pathname === "/";

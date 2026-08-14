@@ -1,15 +1,11 @@
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { type MouseEvent } from "react";
-import { aboutContent } from "../data/summit";
+import { useSiteData } from "../context/SiteDataContext";
 import { Eyebrow } from "./Eyebrow";
 import { ScrollReveal, ScrollRevealGroup, staggerItemVariants } from "./ScrollReveal";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-
-// Split into numbered rows (regular paragraphs) + a closing pull-quote (the bold line).
-const rows = aboutContent.paragraphs.filter((p) => !p.bold);
-const closingLine = aboutContent.paragraphs.find((p) => p.bold);
 
 interface RowProps {
   index: number;
@@ -91,6 +87,10 @@ function AboutRow({ index, text, image }: RowProps) {
 }
 
 export function About() {
+  const { aboutContent } = useSiteData();
+  const rows = aboutContent.paragraphs.filter((p) => !p.bold);
+  const closingLine = aboutContent.paragraphs.find((p) => p.bold);
+
   return (
     <section id="about" className="bg-brand-navy-dark py-24 sm:py-32">
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
