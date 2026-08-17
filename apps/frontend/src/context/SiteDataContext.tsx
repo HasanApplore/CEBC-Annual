@@ -28,6 +28,7 @@ interface SiteContentApi {
     backgroundVideoUrl: string;
     socials: { platform: string; href: string }[];
   };
+  paymentLink: string;
 }
 
 export interface SiteData extends SiteContentApi {
@@ -48,6 +49,7 @@ const initialData: SiteData = {
   aboutContent: fallback.aboutContent,
   galleryContent: fallback.galleryContent,
   footerContent: fallback.footerContent,
+  paymentLink: "",
   agendaItems: fallback.agendaItems,
   speakers: fallback.speakers,
   sponsors: fallback.sponsors,

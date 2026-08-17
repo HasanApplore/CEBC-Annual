@@ -101,7 +101,7 @@ function Field({ label, name, required, type = "text", value, error, onChange }:
 }
 
 export function Register() {
-  const { eventInfo } = useSiteData();
+  const { eventInfo, paymentLink } = useSiteData();
   const [step, setStep] = useState<Step>("details");
   const [form, setForm] = useState<FormState>(initialForm);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
@@ -238,17 +238,33 @@ export function Register() {
                     exit={{ opacity: 0, x: -24 }}
                     transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                   >
-                    <div className="flex flex-col items-center gap-4 rounded-lg border border-dashed border-white/25 bg-white/5 px-6 py-12 text-center">
-                      <CreditCard size={34} className="text-brand-green-light" />
-                      <p className="text-base font-semibold text-white">
-                        Payment step placeholder
-                      </p>
-                      <p className="max-w-sm text-sm text-white/65">
-                        The payment gateway, ticket pricing and currency for the 14th CEBC
-                        Annual Summit have not been finalised yet. This step will be replaced
-                        with live payment collection once confirmed.
-                      </p>
-                    </div>
+                    {paymentLink ? (
+                      <div className="flex flex-col items-center gap-4 rounded-lg border border-dashed border-white/25 bg-white/5 px-6 py-12 text-center">
+                        <CreditCard size={34} className="text-brand-green-light" />
+                        <p className="text-base font-semibold text-white">
+                          Complete your payment
+                        </p>
+                        <p className="max-w-sm text-sm text-white/65">
+                          You'll be taken to our secure payment page. Once you're done, come
+                          back here and select "I've Completed Payment" below.
+                        </p>
+                        <ArrowButton href={paymentLink} target="_blank" rel="noreferrer" variant="solid">
+                          Pay Now
+                        </ArrowButton>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center gap-4 rounded-lg border border-dashed border-white/25 bg-white/5 px-6 py-12 text-center">
+                        <CreditCard size={34} className="text-brand-green-light" />
+                        <p className="text-base font-semibold text-white">
+                          Payment step placeholder
+                        </p>
+                        <p className="max-w-sm text-sm text-white/65">
+                          The payment gateway, ticket pricing and currency for the 14th CEBC
+                          Annual Summit have not been finalised yet. This step will be replaced
+                          with live payment collection once confirmed.
+                        </p>
+                      </div>
+                    )}
 
                     <div className="mt-6 flex items-center justify-between">
                       <button
@@ -266,7 +282,11 @@ export function Register() {
                         className="disabled:cursor-not-allowed disabled:opacity-70"
                       >
                         {submitting && <Loader2 size={16} className="animate-spin" />}
-                        {submitting ? "Confirming…" : "Complete Registration"}
+                        {submitting
+                          ? "Confirming…"
+                          : paymentLink
+                            ? "I've Completed Payment"
+                            : "Complete Registration"}
                       </ArrowButton>
                     </div>
                   </motion.div>

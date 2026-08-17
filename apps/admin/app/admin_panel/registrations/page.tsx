@@ -4,10 +4,20 @@ import { useEffect, useState } from "react";
 import { Download, Loader2 } from "lucide-react";
 import { registrationService, type Registration } from "../../../lib/services/registrations";
 
+const statusLabel: Record<Registration["paymentStatus"], string> = {
+  paid: "Paid",
+  pending: "Payment Pending",
+};
+
+const statusStyles: Record<Registration["paymentStatus"], string> = {
+  paid: "bg-green-100 text-green-700",
+  pending: "bg-amber-100 text-amber-700",
+};
+
 function toCsv(rows: Registration[]): string {
   const headers = ["Name", "Email", "Title", "Company", "Country", "Phone", "Payment Status", "Submitted"];
   const lines = rows.map((r) =>
-    [r.name, r.email, r.title, r.company, r.country, r.phone, r.paymentStatus, r.createdAt]
+    [r.name, r.email, r.title, r.company, r.country, r.phone, statusLabel[r.paymentStatus], r.createdAt]
       .map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`)
       .join(",")
   );
@@ -84,7 +94,13 @@ export default function RegistrationsPage() {
                   <td className="px-4 py-3 text-gray-700">{r.email}</td>
                   <td className="px-4 py-3 text-gray-700">{r.company}</td>
                   <td className="px-4 py-3 text-gray-700">{r.country}</td>
-                  <td className="px-4 py-3 text-gray-700">{r.paymentStatus}</td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`inline-block rounded-full px-2.5 py-1 text-xs font-medium ${statusStyles[r.paymentStatus]}`}
+                    >
+                      {statusLabel[r.paymentStatus]}
+                    </span>
+                  </td>
                   <td className="px-4 py-3 text-gray-500">{new Date(r.createdAt).toLocaleString()}</td>
                 </tr>
               ))

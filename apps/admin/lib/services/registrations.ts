@@ -8,7 +8,8 @@ export interface Registration {
   company: string;
   country: string;
   phone: string;
-  paymentStatus: "not_required" | "pending" | "paid";
+  paymentStatus: "pending" | "paid";
+  amount: number;
   createdAt: string;
 }
 

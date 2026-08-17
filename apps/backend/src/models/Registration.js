@@ -8,14 +8,13 @@ const registrationSchema = new mongoose.Schema(
     company: { type: String, default: "" },
     country: { type: String, default: "" },
     phone: { type: String, default: "" },
-    // Ticket/payment fields are unused while the payment gateway is
-    // pending — kept here so adding payment later doesn't require a
-    // schema migration.
-    ticketType: { type: String, default: "" },
+    // Payment is tracked separately from registration (registering never
+    // requires payment to succeed) — status starts "pending" and only
+    // flips to "paid" once a real payment-gateway webhook confirms it.
     paymentStatus: {
       type: String,
-      enum: ["not_required", "pending", "paid"],
-      default: "not_required",
+      enum: ["pending", "paid"],
+      default: "pending",
     },
     amount: { type: Number, default: 0 },
   },

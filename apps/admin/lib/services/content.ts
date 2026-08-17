@@ -31,6 +31,7 @@ export interface SiteContent {
     backgroundVideoUrl: string;
     socials: { platform: string; href: string }[];
   };
+  paymentLink: string;
 }
 
 export const contentService = {
