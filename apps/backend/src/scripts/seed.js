@@ -48,7 +48,7 @@ const siteContentSeed = {
     { label: "Sponsors", href: "#sponsors" },
     { label: "Partners", href: "#partners" },
     { label: "About", href: "#about" },
-    { label: "Gallery", href: "/gallery" },
+    { label: "Past Event", href: "/gallery" },
   ],
   aboutContent: {
     heading: "Built to Deliver",
@@ -73,7 +73,7 @@ const siteContentSeed = {
     ],
   },
   galleryContent: {
-    eyebrow: "Gallery",
+    eyebrow: "Past Event",
     heading: "Moments from CEBC",
     subheading:
       "The 14th edition hasn't happened yet — this gallery will fill up with photos from the day itself. Until then, here's a preview of the kind of moments we'll be capturing.",

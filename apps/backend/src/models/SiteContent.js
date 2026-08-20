@@ -49,6 +49,7 @@ const siteContentSchema = new mongoose.Schema(
       eyebrow: { type: String, default: "" },
       heading: { type: String, default: "" },
       subheading: { type: String, default: "" },
+      reportUrl: { type: String, default: "" },
     },
     footerContent: {
       about: { type: String, default: "" },

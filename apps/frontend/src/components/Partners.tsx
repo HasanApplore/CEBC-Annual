@@ -25,11 +25,11 @@ function PartnerLogo({ partner, layoutId, onSelect }: PartnerLogoProps) {
       whileFocus={{ zIndex: 30 }}
       transition={{ type: "spring", stiffness: 320, damping: 18 }}
       style={{ zIndex: 1 }}
-      className="group relative mx-3 flex h-20 w-32 shrink-0 items-center justify-center rounded-lg border border-brand-navy/10 bg-white shadow-sm transition-shadow duration-300 hover:border-brand-green/40 hover:shadow-xl hover:shadow-brand-green/20 sm:h-24 sm:w-40"
+      className="group relative mx-3 flex h-20 w-32 shrink-0 flex-col items-center justify-center gap-1.5 rounded-lg border border-brand-navy/10 bg-white px-2 py-2.5 shadow-sm transition-shadow duration-300 hover:border-brand-green/40 hover:shadow-xl hover:shadow-brand-green/20 sm:h-24 sm:w-40"
     >
       <motion.div
         layoutId={`${layoutId}-logo`}
-        className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg shadow-sm ring-1 ring-brand-navy/5 sm:h-14 sm:w-14"
+        className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg shadow-sm ring-1 ring-brand-navy/5 sm:h-12 sm:w-12"
       >
         {partner.logo ? (
           <img
@@ -44,8 +44,8 @@ function PartnerLogo({ partner, layoutId, onSelect }: PartnerLogoProps) {
         )}
       </motion.div>
 
-      {/* Name tooltip, revealed on pop-up */}
-      <span className="mono-label pointer-events-none absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-white px-2 py-0.5 text-[10px] text-brand-navy/0 opacity-0 shadow-sm transition-all duration-300 group-hover:opacity-100 group-hover:text-brand-navy/70">
+      {/* Company name — always visible under the logo */}
+      <span className="mono-label w-full truncate px-1 text-center text-[10px] font-medium text-brand-navy/70">
         {partner.name}
       </span>
     </motion.button>
@@ -94,7 +94,7 @@ function MarqueeRow({ rowIndex, direction, reduceMotion, onSelect, partners }: M
               key={i}
               partner={partner}
               layoutId={layoutId}
-              onSelect={() => onSelect({ ...partner, eyebrow: "Partner", layoutId })}
+              onSelect={() => onSelect({ ...partner, eyebrow: partner.type || "Partner", layoutId })}
             />
           );
         })}

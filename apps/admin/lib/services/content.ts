@@ -23,7 +23,7 @@ export interface SiteContent {
     subheading: string;
     paragraphs: { text: string; bold?: boolean; image?: string }[];
   };
-  galleryContent: { eyebrow: string; heading: string; subheading: string };
+  galleryContent: { eyebrow: string; heading: string; subheading: string; reportUrl: string };
   footerContent: {
     about: string;
     email: string;

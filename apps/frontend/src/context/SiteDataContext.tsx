@@ -20,7 +20,7 @@ interface SiteContentApi {
   sustainabilityFacts: string[];
   navLinks: NavLink[];
   aboutContent: { heading: string; subheading: string; paragraphs: AboutParagraph[] };
-  galleryContent: { eyebrow: string; heading: string; subheading: string };
+  galleryContent: { eyebrow: string; heading: string; subheading: string; reportUrl: string };
   footerContent: {
     about: string;
     email: string;
@@ -80,6 +80,10 @@ function resolveContentMedia(content: SiteContentApi): SiteContentApi {
     footerContent: {
       ...content.footerContent,
       backgroundVideoUrl: resolveMediaUrl(content.footerContent.backgroundVideoUrl),
+    },
+    galleryContent: {
+      ...content.galleryContent,
+      reportUrl: resolveMediaUrl(content.galleryContent.reportUrl),
     },
   };
 }

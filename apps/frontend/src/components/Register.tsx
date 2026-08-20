@@ -14,7 +14,8 @@ interface FormState {
   email: string;
   title: string;
   company: string;
-  country: string;
+  countryOfResidency: string;
+  nationality: string;
   phone: string;
 }
 
@@ -23,7 +24,8 @@ const initialForm: FormState = {
   email: "",
   title: "",
   company: "",
-  country: "",
+  countryOfResidency: "",
+  nationality: "",
   phone: "",
 };
 
@@ -122,6 +124,12 @@ export function Register() {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       nextErrors.email = "Enter a valid email address.";
     }
+    if (!form.countryOfResidency.trim()) {
+      nextErrors.countryOfResidency = "Country of residency is required.";
+    }
+    if (!form.nationality.trim()) {
+      nextErrors.nationality = "Nationality is required.";
+    }
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
   };
@@ -215,7 +223,22 @@ export function Register() {
                     <Field label="Email" name="email" required type="email" value={form.email} error={errors.email} onChange={updateField} />
                     <Field label="Job Title" name="title" value={form.title} onChange={updateField} />
                     <Field label="Company" name="company" value={form.company} onChange={updateField} />
-                    <Field label="Country" name="country" value={form.country} onChange={updateField} />
+                    <Field
+                      label="Country of Residency"
+                      name="countryOfResidency"
+                      required
+                      value={form.countryOfResidency}
+                      error={errors.countryOfResidency}
+                      onChange={updateField}
+                    />
+                    <Field
+                      label="Nationality"
+                      name="nationality"
+                      required
+                      value={form.nationality}
+                      error={errors.nationality}
+                      onChange={updateField}
+                    />
                     <Field label="Phone" name="phone" type="tel" value={form.phone} onChange={updateField} />
 
                     {submitError && (
