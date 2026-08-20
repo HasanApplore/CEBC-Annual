@@ -6,9 +6,11 @@ export interface Registration {
   email: string;
   title: string;
   company: string;
-  country: string;
+  countryOfResidency: string;
+  nationality: string;
   phone: string;
-  paymentStatus: "not_required" | "pending" | "paid";
+  paymentStatus: "pending" | "paid";
+  amount: number;
   createdAt: string;
 }
 

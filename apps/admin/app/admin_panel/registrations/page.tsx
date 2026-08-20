@@ -4,10 +4,40 @@ import { useEffect, useState } from "react";
 import { Download, Loader2 } from "lucide-react";
 import { registrationService, type Registration } from "../../../lib/services/registrations";
 
+const statusLabel: Record<Registration["paymentStatus"], string> = {
+  paid: "Paid",
+  pending: "Payment Pending",
+};
+
+const statusStyles: Record<Registration["paymentStatus"], string> = {
+  paid: "bg-green-100 text-green-700",
+  pending: "bg-amber-100 text-amber-700",
+};
+
 function toCsv(rows: Registration[]): string {
-  const headers = ["Name", "Email", "Title", "Company", "Country", "Phone", "Payment Status", "Submitted"];
+  const headers = [
+    "Name",
+    "Email",
+    "Title",
+    "Company",
+    "Country of Residency",
+    "Nationality",
+    "Phone",
+    "Payment Status",
+    "Submitted",
+  ];
   const lines = rows.map((r) =>
-    [r.name, r.email, r.title, r.company, r.country, r.phone, r.paymentStatus, r.createdAt]
+    [
+      r.name,
+      r.email,
+      r.title,
+      r.company,
+      r.countryOfResidency,
+      r.nationality,
+      r.phone,
+      statusLabel[r.paymentStatus],
+      r.createdAt,
+    ]
       .map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`)
       .join(",")
   );
@@ -59,7 +89,8 @@ export default function RegistrationsPage() {
               <th className="px-4 py-3 font-medium">Name</th>
               <th className="px-4 py-3 font-medium">Email</th>
               <th className="px-4 py-3 font-medium">Company</th>
-              <th className="px-4 py-3 font-medium">Country</th>
+              <th className="px-4 py-3 font-medium">Country of Residency</th>
+              <th className="px-4 py-3 font-medium">Nationality</th>
               <th className="px-4 py-3 font-medium">Payment</th>
               <th className="px-4 py-3 font-medium">Submitted</th>
             </tr>
@@ -67,13 +98,13 @@ export default function RegistrationsPage() {
           <tbody className="divide-y divide-gray-100">
             {loading ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
+                <td colSpan={7} className="px-4 py-8 text-center text-gray-400">
                   <Loader2 className="mx-auto animate-spin" size={18} />
                 </td>
               </tr>
             ) : rows.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
+                <td colSpan={7} className="px-4 py-8 text-center text-gray-400">
                   No registrations yet.
                 </td>
               </tr>
@@ -83,8 +114,15 @@ export default function RegistrationsPage() {
                   <td className="px-4 py-3 text-gray-700">{r.name}</td>
                   <td className="px-4 py-3 text-gray-700">{r.email}</td>
                   <td className="px-4 py-3 text-gray-700">{r.company}</td>
-                  <td className="px-4 py-3 text-gray-700">{r.country}</td>
-                  <td className="px-4 py-3 text-gray-700">{r.paymentStatus}</td>
+                  <td className="px-4 py-3 text-gray-700">{r.countryOfResidency}</td>
+                  <td className="px-4 py-3 text-gray-700">{r.nationality}</td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`inline-block rounded-full px-2.5 py-1 text-xs font-medium ${statusStyles[r.paymentStatus]}`}
+                    >
+                      {statusLabel[r.paymentStatus]}
+                    </span>
+                  </td>
                   <td className="px-4 py-3 text-gray-500">{new Date(r.createdAt).toLocaleString()}</td>
                 </tr>
               ))

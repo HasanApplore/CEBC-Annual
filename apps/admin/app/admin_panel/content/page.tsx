@@ -137,7 +137,7 @@ export default function ContentPage() {
           <MediaField label="Hero Image" value={content.eventInfo.heroImageUrl} onChange={(v) => setEventInfo("heroImageUrl", v)} />
           <MediaField label="Hero Video" value={content.eventInfo.heroVideoUrl} onChange={(v) => setEventInfo("heroVideoUrl", v)} />
           <MediaField
-            label="Gallery Hero Video"
+            label="Past Event Hero Video"
             value={content.eventInfo.galleryHeroVideoUrl}
             onChange={(v) => setEventInfo("galleryHeroVideoUrl", v)}
           />
@@ -151,10 +151,16 @@ export default function ContentPage() {
           </p>
         </Section>
 
-        <Section title="Gallery Header">
+        <Section title="Past Event Header">
           <TextField label="Eyebrow" value={content.galleryContent.eyebrow} onChange={(v) => setGallery("eyebrow", v)} />
           <TextField label="Heading" value={content.galleryContent.heading} onChange={(v) => setGallery("heading", v)} />
           <TextField label="Subheading" value={content.galleryContent.subheading} onChange={(v) => setGallery("subheading", v)} textarea />
+          <MediaField
+            label="Summit Report (PDF)"
+            value={content.galleryContent.reportUrl}
+            onChange={(v) => setGallery("reportUrl", v)}
+            accept="application/pdf"
+          />
         </Section>
 
         <Section title="Footer">

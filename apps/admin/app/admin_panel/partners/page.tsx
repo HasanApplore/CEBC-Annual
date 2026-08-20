@@ -5,6 +5,7 @@ import { partnerService, type Partner } from "../../../lib/services/partners";
 
 const fields: FieldConfig[] = [
   { key: "name", label: "Name", type: "text" },
+  { key: "type", label: "Type (e.g. Networking Partner)", type: "text" },
   { key: "logo", label: "Logo", type: "media" },
   { key: "description", label: "Description", type: "textarea" },
   { key: "website", label: "Website URL", type: "text" },
@@ -21,8 +22,9 @@ export default function PartnersPage() {
       columns={[
         { key: "order", label: "#" },
         { key: "name", label: "Name" },
+        { key: "type", label: "Type" },
       ]}
-      emptyItem={{ name: "", logo: "", description: "", website: "", order: 0 }}
+      emptyItem={{ name: "", type: "", logo: "", description: "", website: "", order: 0 }}
     />
   );
 }

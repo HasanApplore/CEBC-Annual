@@ -4,8 +4,8 @@ const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
   const allowed = /^(image\/|video\/)/;
-  if (allowed.test(file.mimetype)) return cb(null, true);
-  cb(new Error("Only image or video files are allowed"));
+  if (allowed.test(file.mimetype) || file.mimetype === "application/pdf") return cb(null, true);
+  cb(new Error("Only image, video, or PDF files are allowed"));
 };
 
 const upload = multer({

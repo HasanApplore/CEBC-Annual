@@ -49,6 +49,7 @@ const siteContentSchema = new mongoose.Schema(
       eyebrow: { type: String, default: "" },
       heading: { type: String, default: "" },
       subheading: { type: String, default: "" },
+      reportUrl: { type: String, default: "" },
     },
     footerContent: {
       about: { type: String, default: "" },
@@ -63,6 +64,10 @@ const siteContentSchema = new mongoose.Schema(
         },
       ],
     },
+    // Hosted checkout link (e.g. a Stripe Payment Link) — the Register
+    // form's payment step sends attendees here instead of collecting card
+    // details directly, since there's no payment-gateway backend yet.
+    paymentLink: { type: String, default: "" },
   },
   { timestamps: true }
 );

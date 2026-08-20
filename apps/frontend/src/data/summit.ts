@@ -89,7 +89,7 @@ export const navLinks: NavLink[] = [
   { label: "Sponsors", href: "#sponsors" },
   { label: "Partners", href: "#partners" },
   { label: "About", href: "#about" },
-  { label: "Gallery", href: "/gallery" },
+  { label: "Past Event", href: "/gallery" },
 ];
 
 export interface AboutParagraph {
@@ -248,6 +248,8 @@ export const sponsors: Record<SponsorTier, Sponsor[]> = {
 export interface Partner {
   name: string;
   logo: string;
+  /** e.g. "Networking Partner", "Strategic Partner" — shown as a badge on the card. */
+  type: string;
   description: string;
   website: string;
 }
@@ -256,16 +258,18 @@ export interface Partner {
 export const partners: Partner[] = Array.from({ length: 4 }, (_, i) => ({
   name: `Partner Organization ${i + 1}`,
   logo: placeholderLogo(`Partner Org ${i + 1}`, i % 2 === 0 ? "2A3F6E" : "6FA06D"),
+  type: "",
   description:
     "Partner details to be announced. This placeholder card will be replaced with confirmed organization branding and copy.",
   website: "",
 }));
 
 export const galleryContent = {
-  eyebrow: "Gallery",
+  eyebrow: "Past Event",
   heading: "Moments from CEBC",
   subheading:
     "The 14th edition hasn't happened yet — this gallery will fill up with photos from the day itself. Until then, here's a preview of the kind of moments we'll be capturing.",
+  reportUrl: "",
 };
 
 export interface GalleryImage {

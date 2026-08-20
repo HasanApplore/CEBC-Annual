@@ -16,6 +16,7 @@ const speakerRoutes = require("./routes/speakers");
 const sponsorRoutes = require("./routes/sponsors");
 const partnerRoutes = require("./routes/partners");
 const galleryRoutes = require("./routes/gallery");
+const pastSummitRoutes = require("./routes/pastSummits");
 const registrationRoutes = require("./routes/registrations");
 const uploadRoutes = require("./routes/upload");
 
@@ -38,6 +39,7 @@ app.use("/api/speakers", speakerRoutes);
 app.use("/api/sponsors", sponsorRoutes);
 app.use("/api/partners", partnerRoutes);
 app.use("/api/gallery", galleryRoutes);
+app.use("/api/past-summits", pastSummitRoutes);
 app.use("/api/registrations", registrationRoutes);
 app.use("/api/upload", uploadRoutes);
 

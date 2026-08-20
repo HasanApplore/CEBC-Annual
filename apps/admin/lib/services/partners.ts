@@ -4,6 +4,7 @@ export interface Partner {
   _id?: string;
   name: string;
   logo: string;
+  type: string;
   description: string;
   website: string;
   order: number;

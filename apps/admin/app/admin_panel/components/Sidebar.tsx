@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   CalendarClock,
+  CreditCard,
   FileText,
   Handshake,
   Image as ImageIcon,
@@ -21,8 +22,9 @@ const NAV_ITEMS = [
   { href: "/admin_panel/speakers", label: "Speakers", icon: Mic2 },
   { href: "/admin_panel/sponsors", label: "Sponsors", icon: Trophy },
   { href: "/admin_panel/partners", label: "Partners", icon: Handshake },
-  { href: "/admin_panel/gallery", label: "Gallery", icon: ImageIcon },
+  { href: "/admin_panel/past-events", label: "Past Event", icon: ImageIcon },
   { href: "/admin_panel/registrations", label: "Registrations", icon: Users },
+  { href: "/admin_panel/payments", label: "Payments", icon: CreditCard },
 ];
 
 export function Sidebar({ user }: { user: AdminUser }) {

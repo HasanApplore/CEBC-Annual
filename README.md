@@ -38,6 +38,8 @@ npm run dev:frontend            # http://localhost:5173 — public site
 - **Speakers**, **Sponsors** (by tier), **Partners** — add/edit/delete/reorder
 - **Gallery** — photos on the `/gallery` page
 - **Registrations** — read-only list of attendees who submitted the Register form, with CSV export
+- **Payments** — set the checkout link (e.g. a Stripe Payment Link) sent to attendees from the
+  Register form's payment step, and see each registrant's payment status (read-only)
 
 Images/videos can be uploaded directly from the admin panel — files go to
 AWS S3 (`applore-dev-projects-5`, `ap-south-1`, under the `cebc/uploads/`
@@ -45,10 +47,12 @@ prefix) and come back as a public HTTPS URL — or set as a plain URL.
 
 ## Payments
 
-Not yet integrated — the Register form's "Payment" step is still an explicit
-placeholder, as before. The `Registration` model already has `paymentStatus`/
-`amount`/`ticketType` fields reserved so wiring in a gateway later won't
-require a schema change.
+Registering never requires payment to succeed — the Register form saves the
+attendee's details first, then sends them to the payment link (stored in
+`SiteContent.paymentLink`, editable from the admin's Payments page) as a
+separate step. There's no gateway webhook wired up yet, so every
+`Registration` starts and stays `paymentStatus: "pending"` until that's
+built — the admin panel intentionally has no way to mark one "paid" manually.
 
 ## Production notes
 

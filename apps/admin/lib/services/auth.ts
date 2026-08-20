@@ -36,6 +36,14 @@ export const authService = {
   getUser(): AdminUser | null {
     if (typeof window === "undefined") return null;
     const raw = localStorage.getItem(USER_KEY);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch {
+      // Corrupted/stale value — clear it so future reads don't keep failing.
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+      return null;
+    }
   },
 };

@@ -13,8 +13,8 @@ const fields: FieldConfig[] = [
 export default function GalleryPage() {
   return (
     <ResourceManager<GalleryImage>
-      title="Gallery"
-      description="Manage the Gallery page's photos."
+      title="Past Event"
+      description="Manage the Past Event page's photos."
       service={galleryService}
       fields={fields}
       columns={[

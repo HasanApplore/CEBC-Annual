@@ -10,13 +10,21 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AdminUser | null | undefined>(undefined);
 
   useEffect(() => {
-    const token = authService.getToken();
-    const currentUser = authService.getUser();
-    if (!token || !currentUser) {
+    try {
+      const token = authService.getToken();
+      const currentUser = authService.getUser();
+      if (!token || !currentUser) {
+        setUser(null);
+        router.replace("/login");
+        return;
+      }
+      setUser(currentUser);
+    } catch {
+      // Never leave `user` stuck at undefined — always resolve to a state
+      // that renders something, even if the session check itself failed.
+      setUser(null);
       router.replace("/login");
-      return;
     }
-    setUser(currentUser);
   }, [router]);
 
   if (user === undefined) {

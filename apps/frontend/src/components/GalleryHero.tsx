@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Download } from "lucide-react";
+import { ArrowButton } from "./ArrowButton";
 import { useSiteData } from "../context/SiteDataContext";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 
@@ -91,6 +92,26 @@ function CollageBadge({
   );
 }
 
+function DownloadReportButton({ reportUrl, delay }: { reportUrl: string; delay: number }) {
+  const reduceMotion = usePrefersReducedMotion();
+
+  if (!reportUrl) return null;
+
+  return (
+    <motion.div
+      initial={reduceMotion ? undefined : { opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay, ease: EASE }}
+      className="pointer-events-auto relative z-10 mt-8 flex justify-center"
+    >
+      <ArrowButton href={reportUrl} target="_blank" rel="noreferrer" variant="solid">
+        <Download size={14} />
+        Download Summit Report
+      </ArrowButton>
+    </motion.div>
+  );
+}
+
 export function GalleryHero() {
   const { eventInfo, galleryContent, galleryImages } = useSiteData();
   const reduceMotion = usePrefersReducedMotion();
@@ -127,7 +148,7 @@ export function GalleryHero() {
       {/* Collage row — sits right below the banner, pulled up to overlap its bottom edge */}
       <div className="relative pt-[62vh] sm:pt-[72vh]">
         <div className="mx-auto max-w-[1600px] px-5 sm:px-8">
-          <div className="relative z-10 mx-auto -mt-14 flex flex-col items-center gap-8 px-2 pb-16 sm:-mt-20 sm:gap-10 sm:pb-24 lg:-mt-24 lg:flex-row lg:flex-wrap lg:items-center lg:justify-center lg:gap-x-8 lg:gap-y-12 xl:gap-x-10">
+          <div className="relative z-10 mx-auto -mt-14 flex flex-col items-center gap-8 px-2 pb-10 sm:-mt-20 sm:gap-10 sm:pb-14 lg:-mt-24 lg:flex-row lg:flex-wrap lg:items-center lg:justify-center lg:gap-x-8 lg:gap-y-12 xl:gap-x-10">
             <div className="flex gap-4 lg:-rotate-2">
               <Polaroid src={galleryImages[0].photo} caption={galleryImages[0].caption} rotate={-6} delay={0.15} />
               <Polaroid
@@ -152,6 +173,8 @@ export function GalleryHero() {
               <Polaroid src={galleryImages[3].photo} caption={galleryImages[3].caption} rotate={6} delay={0.7} />
             </div>
           </div>
+
+          <DownloadReportButton reportUrl={galleryContent.reportUrl} delay={0.8} />
         </div>
       </div>
     </section>

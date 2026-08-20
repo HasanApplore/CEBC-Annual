@@ -32,5 +32,12 @@ function authorize(...roles) {
     next();
   };
 }
+function requireApiKey(req, res, next) {
+  const key = req.headers["x-api-key"];
+  if (!key || key !== process.env.BOOMRANG_API_KEY) {
+    return next(new AppError("Invalid API key.", 401))
+  }
+  next();
+}
 
-module.exports = { protect, authorize };
+module.exports = { protect, authorize, requireApiKey };
