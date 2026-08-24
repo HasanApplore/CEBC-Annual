@@ -42,8 +42,26 @@ const createCheckoutSession = catchAsync(async (req, res, next) => {
   res.status(200).json({ success: true, data: { url: session.url }, message: "Checkout session created" });
 });
 
+// Best-effort — the promotion code text isn't required to confirm payment,
+// so any failure here must never take down the webhook itself.
+async function lookupDiscountCode(sessionId) {
+  try {
+    const full = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ["total_details.breakdown.discounts.discount.promotion_code"],
+    });
+    const promo = full.total_details?.breakdown?.discounts?.[0]?.discount?.promotion_code;
+    return promo && typeof promo === "object" ? promo.code : "";
+  } catch (err) {
+    console.error("Discount code lookup failed:", err.message);
+    return "";
+  }
+}
+
 // Stripe webhook — mounted with express.raw() in server.js so the signature
-// can be verified against the exact bytes Stripe sent.
+// can be verified against the exact bytes Stripe sent. Wrapped in its own
+// try/catch (not catchAsync, which forwards to an error page Stripe won't
+// read) so a failure can't crash the process on an unhandled rejection —
+// that took the whole backend down previously.
 const stripeWebhook = async (req, res) => {
   const signature = req.headers["stripe-signature"];
   let event;
@@ -53,28 +71,31 @@ const stripeWebhook = async (req, res) => {
     return res.status(400).send(`Webhook signature verification failed: ${err.message}`);
   }
 
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object;
-    const registration = await Registration.findById(session.client_reference_id);
-    if (registration) {
-      const update = {
-        paymentStatus: "paid",
-        amount: (session.amount_total || 0) / 100,
-      };
+  try {
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object;
+      const registration = await Registration.findById(session.client_reference_id).catch(() => null);
+      if (registration) {
+        const update = {
+          paymentStatus: "paid",
+          amount: (session.amount_total || 0) / 100,
+        };
 
-      if (session.total_details?.amount_discount) {
-        const full = await stripe.checkout.sessions.retrieve(session.id, {
-          expand: ["total_details.breakdown.discounts.discount.promotion_code"],
-        });
-        const promo = full.total_details?.breakdown?.discounts?.[0]?.discount?.promotion_code;
-        if (promo && typeof promo === "object") update.discountCode = promo.code;
+        if (session.total_details?.amount_discount) {
+          const discountCode = await lookupDiscountCode(session.id);
+          if (discountCode) update.discountCode = discountCode;
+        }
+
+        await Registration.updateOne({ _id: registration._id }, update);
+        // TODO once ready: push this registration to Boomrang's webhook and
+        // send the attendee confirmation email — both still pending client
+        // credentials (Boomrang endpoint/auth, SMTP access for info@cebcmena.com).
       }
-
-      await Registration.updateOne({ _id: registration._id }, update);
-      // TODO once ready: push this registration to Boomrang's webhook and
-      // send the attendee confirmation email — both still pending client
-      // credentials (Boomrang endpoint/auth, SMTP access for info@cebcmena.com).
     }
+  } catch (err) {
+    // Log and still acknowledge receipt below — returning an error here
+    // would make Stripe retry indefinitely without ever fixing itself.
+    console.error("Stripe webhook processing failed:", err);
   }
 
   res.status(200).json({ received: true });
