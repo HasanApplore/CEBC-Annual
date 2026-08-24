@@ -17,6 +17,7 @@ const tiers: { key: SponsorTier; cardSize: string; chipSize: string }[] = [
   { key: "Platinum", cardSize: "sm:grid-cols-2", chipSize: "h-20 w-20 sm:h-24 sm:w-24" },
   { key: "Gold", cardSize: "sm:grid-cols-3", chipSize: "h-16 w-16 sm:h-20 sm:w-20" },
   { key: "Silver", cardSize: "sm:grid-cols-3", chipSize: "h-14 w-14 sm:h-16 sm:w-16" },
+  { key: "Bronze", cardSize: "sm:grid-cols-3", chipSize: "h-14 w-14 sm:h-16 sm:w-16" },
 ];
 
 function SponsorCard({
@@ -118,7 +119,7 @@ function SponsorCard({
 }
 
 export function Sponsors() {
-  const { sponsors } = useSiteData();
+  const { sponsors, sponsorPackageUrl } = useSiteData();
   const [selected, setSelected] = useState<DetailModalEntry | null>(null);
   const reduceMotion = usePrefersReducedMotion();
 
@@ -148,9 +149,6 @@ export function Sponsors() {
                   <h3 className="mono-label text-sm font-bold text-brand-navy sm:text-base">
                     {key}
                   </h3>
-                  <p className="mono-label text-[11px] text-brand-navy/40">
-                    {sponsors[key].length} {sponsors[key].length === 1 ? "Partner" : "Partners"}
-                  </p>
                 </div>
               </ScrollReveal>
 
@@ -177,9 +175,15 @@ export function Sponsors() {
         </div>
 
         <ScrollReveal className="mt-16 flex justify-center" delay={0.1}>
-          <ArrowButton href="#register" variant="solid">
-            Become a Sponsor
-          </ArrowButton>
+          {sponsorPackageUrl ? (
+            <ArrowButton href={sponsorPackageUrl} target="_blank" rel="noreferrer" variant="solid">
+              Become a Sponsor
+            </ArrowButton>
+          ) : (
+            <ArrowButton href="#register" variant="solid">
+              Become a Sponsor
+            </ArrowButton>
+          )}
         </ScrollReveal>
       </div>
 

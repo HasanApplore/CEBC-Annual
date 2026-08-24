@@ -29,6 +29,7 @@ interface SiteContentApi {
     socials: { platform: string; href: string }[];
   };
   paymentLink: string;
+  sponsorPackageUrl: string;
 }
 
 export interface SiteData extends SiteContentApi {
@@ -50,6 +51,7 @@ const initialData: SiteData = {
   galleryContent: fallback.galleryContent,
   footerContent: fallback.footerContent,
   paymentLink: "",
+  sponsorPackageUrl: "",
   agendaItems: fallback.agendaItems,
   speakers: fallback.speakers,
   sponsors: fallback.sponsors,
@@ -85,6 +87,7 @@ function resolveContentMedia(content: SiteContentApi): SiteContentApi {
       ...content.galleryContent,
       reportUrl: resolveMediaUrl(content.galleryContent.reportUrl),
     },
+    sponsorPackageUrl: resolveMediaUrl(content.sponsorPackageUrl),
   };
 }
 

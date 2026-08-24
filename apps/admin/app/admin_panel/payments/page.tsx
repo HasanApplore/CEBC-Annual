@@ -17,6 +17,8 @@ const statusStyles: Record<Registration["paymentStatus"], string> = {
 
 export default function PaymentsPage() {
   const [paymentLink, setPaymentLink] = useState("");
+  const [ticketPrice, setTicketPrice] = useState("0");
+  const [ticketCurrency, setTicketCurrency] = useState("aed");
   const [linkLoading, setLinkLoading] = useState(true);
   const [linkSaving, setLinkSaving] = useState(false);
   const [linkSavedAt, setLinkSavedAt] = useState("");
@@ -28,6 +30,8 @@ export default function PaymentsPage() {
   useEffect(() => {
     contentService.get().then((data) => {
       setPaymentLink(data.paymentLink || "");
+      setTicketPrice(String(data.ticketPrice ?? 0));
+      setTicketCurrency(data.ticketCurrency || "aed");
       setLinkLoading(false);
     });
     registrationService.getAll().then((data) => {
@@ -40,7 +44,11 @@ export default function PaymentsPage() {
     setLinkSaving(true);
     setLinkError("");
     try {
-      await contentService.update({ paymentLink });
+      await contentService.update({
+        paymentLink,
+        ticketPrice: Number(ticketPrice) || 0,
+        ticketCurrency: ticketCurrency.trim().toLowerCase(),
+      });
       setLinkSavedAt(new Date().toLocaleTimeString());
     } catch (err) {
       setLinkError(err instanceof Error ? err.message : "Save failed");
@@ -65,22 +73,31 @@ export default function PaymentsPage() {
 
       <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
         <h2 className="mb-1 text-sm font-bold uppercase tracking-wide text-gray-500">
-          Payment Link
+          Ticket Price
         </h2>
         <p className="mb-4 text-sm text-gray-500">
-          Attendees are sent here from the Register form's payment step (e.g. a Stripe Payment
-          Link).
+          Charged on Stripe Checkout when an attendee completes registration. Discount codes
+          (CEBCMEMBERS, CEBCFF25, CEBCVIP, EARLYBIRD20, CEBCMEMBER50) are entered by the attendee
+          on Stripe's checkout page and are managed directly in Stripe, not here.
         </p>
         {linkLoading ? (
           <Loader2 className="animate-spin text-gray-400" size={18} />
         ) : (
           <div className="flex items-center gap-2">
             <input
+              type="number"
+              min={0}
+              step="0.01"
+              value={ticketPrice}
+              onChange={(e) => setTicketPrice(e.target.value)}
+              className="w-40 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#0f1b3d]"
+            />
+            <input
               type="text"
-              value={paymentLink}
-              onChange={(e) => setPaymentLink(e.target.value)}
-              placeholder="https://buy.stripe.com/..."
-              className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#0f1b3d]"
+              value={ticketCurrency}
+              onChange={(e) => setTicketCurrency(e.target.value)}
+              placeholder="aed"
+              className="w-24 rounded-lg border border-gray-300 px-3 py-2 text-sm uppercase outline-none focus:border-[#0f1b3d]"
             />
             <button
               onClick={handleSaveLink}
@@ -96,6 +113,23 @@ export default function PaymentsPage() {
         {linkSavedAt && !linkError && (
           <p className="mt-2 text-sm text-green-600">Saved at {linkSavedAt}</p>
         )}
+      </div>
+
+      <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
+        <h2 className="mb-1 text-sm font-bold uppercase tracking-wide text-gray-500">
+          Payment Link (legacy fallback)
+        </h2>
+        <p className="mb-4 text-sm text-gray-500">
+          No longer used by the live flow — registrations now go through a per-attendee Stripe
+          Checkout Session instead of this shared link. Left here only in case it's needed again.
+        </p>
+        <input
+          type="text"
+          value={paymentLink}
+          onChange={(e) => setPaymentLink(e.target.value)}
+          placeholder="https://buy.stripe.com/..."
+          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#0f1b3d]"
+        />
       </div>
 
       <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3">

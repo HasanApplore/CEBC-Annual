@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, CreditCard, Loader2, MapPin } from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { useSiteData } from "../context/SiteDataContext";
 import { apiPost } from "../lib/api";
 import { ArrowButton } from "./ArrowButton";
@@ -103,13 +103,24 @@ function Field({ label, name, required, type = "text", value, error, onChange }:
 }
 
 export function Register() {
-  const { eventInfo, paymentLink } = useSiteData();
+  const { eventInfo } = useSiteData();
   const [step, setStep] = useState<Step>("details");
   const [form, setForm] = useState<FormState>(initialForm);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [registrationId, setRegistrationId] = useState<string | null>(null);
+  const [paymentError, setPaymentError] = useState("");
+
+  // Stripe redirects back here with ?payment=success after a completed checkout.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("payment") === "success") {
+      setShowForm(true);
+      setStep("confirmation");
+    }
+  }, []);
 
   const updateField = (name: keyof FormState, value: string) => {
     setForm((f) => ({ ...f, [name]: value }));
@@ -141,7 +152,8 @@ export function Register() {
     setSubmitError("");
     setSubmitting(true);
     try {
-      await apiPost("/registrations", form);
+      const registration = await apiPost<{ _id: string }>("/registrations", form);
+      setRegistrationId(registration._id);
       setStep("payment");
     } catch {
       setSubmitError("We couldn't save your details. Please try again.");
@@ -150,14 +162,19 @@ export function Register() {
     }
   };
 
-  const handlePaymentContinue = () => {
+  const handlePaymentContinue = async () => {
+    if (!registrationId) return;
+    setPaymentError("");
     setSubmitting(true);
-    // Payment gateway is not yet decided (provider/pricing/currency pending).
-    // This simulated delay stands in for the real payment confirmation call.
-    window.setTimeout(() => {
+    try {
+      const { url } = await apiPost<{ url: string }>("/payments/create-checkout-session", {
+        registrationId,
+      });
+      window.location.href = url;
+    } catch {
+      setPaymentError("We couldn't start the payment. Please try again.");
       setSubmitting(false);
-      setStep("confirmation");
-    }, 900);
+    }
   };
 
   const resetFlow = () => {
@@ -261,32 +278,17 @@ export function Register() {
                     exit={{ opacity: 0, x: -24 }}
                     transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                   >
-                    {paymentLink ? (
-                      <div className="flex flex-col items-center gap-4 rounded-lg border border-dashed border-white/25 bg-white/5 px-6 py-12 text-center">
-                        <CreditCard size={34} className="text-brand-green-light" />
-                        <p className="text-base font-semibold text-white">
-                          Complete your payment
-                        </p>
-                        <p className="max-w-sm text-sm text-white/65">
-                          You'll be taken to our secure payment page. Once you're done, come
-                          back here and select "I've Completed Payment" below.
-                        </p>
-                        <ArrowButton href={paymentLink} target="_blank" rel="noreferrer" variant="solid">
-                          Pay Now
-                        </ArrowButton>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center gap-4 rounded-lg border border-dashed border-white/25 bg-white/5 px-6 py-12 text-center">
-                        <CreditCard size={34} className="text-brand-green-light" />
-                        <p className="text-base font-semibold text-white">
-                          Payment step placeholder
-                        </p>
-                        <p className="max-w-sm text-sm text-white/65">
-                          The payment gateway, ticket pricing and currency for the 14th CEBC
-                          Annual Summit have not been finalised yet. This step will be replaced
-                          with live payment collection once confirmed.
-                        </p>
-                      </div>
+                    <div className="flex flex-col items-center gap-4 rounded-lg border border-dashed border-white/25 bg-white/5 px-6 py-12 text-center">
+                      <CreditCard size={34} className="text-brand-green-light" />
+                      <p className="text-base font-semibold text-white">Complete your payment</p>
+                      <p className="max-w-sm text-sm text-white/65">
+                        You'll be taken to our secure Stripe checkout page. If you have a
+                        discount code, you can enter it there.
+                      </p>
+                    </div>
+
+                    {paymentError && (
+                      <p className="mt-4 text-center text-sm text-red-300">{paymentError}</p>
                     )}
 
                     <div className="mt-6 flex items-center justify-between">
@@ -305,11 +307,7 @@ export function Register() {
                         className="disabled:cursor-not-allowed disabled:opacity-70"
                       >
                         {submitting && <Loader2 size={16} className="animate-spin" />}
-                        {submitting
-                          ? "Confirming…"
-                          : paymentLink
-                            ? "I've Completed Payment"
-                            : "Complete Registration"}
+                        {submitting ? "Redirecting…" : "Proceed to Payment"}
                       </ArrowButton>
                     </div>
                   </motion.div>

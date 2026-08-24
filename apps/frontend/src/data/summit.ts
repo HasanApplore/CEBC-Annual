@@ -100,27 +100,27 @@ export interface AboutParagraph {
 }
 
 export const aboutContent = {
-  heading: "Built to Deliver",
+  heading: "The Turning Point: Change, Resilience, and Economic Transformation in MENA",
   subheading:
     "The people, partnerships and platforms driving MENA's transition.",
   paragraphs: [
     {
       text:
-        "The CEBC Annual Summit returns for its 14th edition at a defining moment for the region. As global pressure intensifies ahead of COP30, MENA is not just adapting, it's positioning itself to lead.",
+        "This year's 14th edition of the CEBC Annual Summit, themed “The Turning Point: Change, Resilience, and Economic Transformation in MENA,” serves as the definitive platform for the region's post-crisis recovery. We are bringing together the visionaries, capital, and frameworks essential to transforming adversity into a catalyst for sustainable growth.",
       image: "https://picsum.photos/seed/cebc-about-momentum/400/400",
     },
     {
       text:
-        "This year's summit explores what it really takes to deliver net-zero strategies in practice; from decarbonising heavy industry to deploying AI in energy systems, and from unlocking climate finance to integrating mobility, hydrogen, and digital solutions.",
+        "From future-proofing cross-border energy infrastructure and securing supply chains to accelerating heavy industry decarbonization, maintaining climate finance under tighter economic conditions, and deploying grid resilience, alongside deepening regional economic integration, advancing in-country value creation, and embedding circularity across supply chains to build sovereign industrial capacity.",
       image: "https://picsum.photos/seed/cebc-about-strategy/400/400",
     },
     {
       text:
-        "With voices from across government, finance and industry, the 14th CEBC Annual Summit is where the region's decision-makers come to confront complexity, share what's working and build what's next.",
+        "Energy resilience is the critical foundation for achieving UAE Net Zero by 2050, and it cannot be achieved in isolation. At this turning point, it must be forged, together, by a region ready to transform its future.",
       image: "https://picsum.photos/seed/cebc-about-voices/400/400",
     },
     {
-      text: "Because when it comes to clean energy leadership, MENA is built for this.",
+      text: "The question is no longer just how to sustain the energy transition, how to turn disruption into its greatest driver.",
       bold: true,
     },
   ] satisfies AboutParagraph[],
@@ -211,7 +211,7 @@ export interface Sponsor {
   website: string;
 }
 
-export type SponsorTier = "Platinum" | "Gold" | "Silver";
+export type SponsorTier = "Platinum" | "Gold" | "Silver" | "Bronze";
 
 // Generates a simple lettermark "logo" via ui-avatars.com so sponsor/partner
 // cards preview with real imagery instead of empty tiles. Swap `logo` for a
@@ -243,6 +243,7 @@ export const sponsors: Record<SponsorTier, Sponsor[]> = {
       "Sponsor details to be announced. This placeholder card will be replaced with confirmed partner branding and copy.",
     website: "",
   })),
+  Bronze: [],
 };
 
 export interface Partner {
@@ -330,15 +331,14 @@ export const galleryImages: GalleryImage[] = [
 
 export const footerContent = {
   about:
-    "Registered as a Not for Profit Company in Abu Dhabi Global Market (ADGM), the Clean Energy Business Council is the pre-eminent organization representing the private sector involved in the clean energy sector across the MENA region.",
+    "CEBC MENA is A platform to drive clean energy policy and the sustainable economy dialogue between the public and private sectors across the MENA region.",
   email: "info@cebcmena.com",
   address: "Abu Dhabi Global Market, ADGM",
   backgroundVideoUrl: "/videos/15791219_3840_2160_30fps.mp4",
   socials: [
-    { platform: "Facebook", href: "#" },
-    { platform: "Twitter", href: "#" },
+    { platform: "Facebook", href: "https://www.facebook.com/CEBCMENA1" },
     { platform: "YouTube", href: "#" },
-    { platform: "LinkedIn", href: "#" },
-    { platform: "Instagram", href: "#" },
+    { platform: "LinkedIn", href: "https://www.linkedin.com/company/cebcmena/?viewAsMember=true" },
+    { platform: "Instagram", href: "https://www.instagram.com/cebc_mena?igsi=MW1wNXVuZGt6ZHg2MA%3D%3D&utm_source=qr" },
   ] as { platform: string; href: string }[],
 };

@@ -32,6 +32,9 @@ export interface SiteContent {
     socials: { platform: string; href: string }[];
   };
   paymentLink: string;
+  sponsorPackageUrl: string;
+  ticketPrice: number;
+  ticketCurrency: string;
 }
 
 export const contentService = {
