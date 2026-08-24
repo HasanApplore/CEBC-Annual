@@ -19,6 +19,8 @@ const galleryRoutes = require("./routes/gallery");
 const pastSummitRoutes = require("./routes/pastSummits");
 const registrationRoutes = require("./routes/registrations");
 const uploadRoutes = require("./routes/upload");
+const paymentRoutes = require("./routes/payments");
+const { stripeWebhook } = require("./controllers/paymentController");
 
 const app = express();
 
@@ -26,6 +28,11 @@ const allowedOrigins = (process.env.CORS_ORIGIN || "").split(",").map((o) => o.t
 app.use(cors({ origin: allowedOrigins.length ? allowedOrigins : true }));
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(morgan("dev"));
+
+// Mounted before express.json() — Stripe's signature check needs the exact
+// raw request bytes, not the parsed-then-re-serialized body.
+app.post("/api/payments/webhook", express.raw({ type: "application/json" }), stripeWebhook);
+
 app.use(express.json({ limit: "10mb" }));
 
 app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
@@ -42,6 +49,7 @@ app.use("/api/gallery", galleryRoutes);
 app.use("/api/past-summits", pastSummitRoutes);
 app.use("/api/registrations", registrationRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/payments", paymentRoutes);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Route not found: ${req.originalUrl}`, 404));

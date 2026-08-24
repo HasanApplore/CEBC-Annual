@@ -96,6 +96,15 @@ export default function ContentPage() {
   const setFooter = <K extends keyof SiteContent["footerContent"]>(key: K, value: string) =>
     setContent({ ...content, footerContent: { ...content.footerContent, [key]: value } as never });
 
+  const setSocial = (platform: string, href: string) =>
+    setContent({
+      ...content,
+      footerContent: {
+        ...content.footerContent,
+        socials: content.footerContent.socials.map((s) => (s.platform === platform ? { ...s, href } : s)),
+      },
+    });
+
   return (
     <div className="max-w-3xl">
       <div className="mb-6 flex items-center justify-between">
@@ -174,6 +183,32 @@ export default function ContentPage() {
             value={content.footerContent.backgroundVideoUrl}
             onChange={(v) => setFooter("backgroundVideoUrl", v)}
           />
+        </Section>
+
+        <Section title="Social Links">
+          {content.footerContent.socials.map((social) => (
+            <TextField
+              key={social.platform}
+              label={social.platform}
+              value={social.href}
+              onChange={(v) => setSocial(social.platform, v)}
+            />
+          ))}
+          <p className="text-xs text-gray-400">
+            To add or remove a platform entirely (not just its link), edit via the API/database directly.
+          </p>
+        </Section>
+
+        <Section title="Sponsors">
+          <MediaField
+            label="Sponsorship Package (PDF)"
+            value={content.sponsorPackageUrl}
+            onChange={(v) => setContent({ ...content, sponsorPackageUrl: v })}
+            accept="application/pdf"
+          />
+          <p className="text-xs text-gray-400">
+            Powers the "Become a Sponsor" button — links here once set, otherwise falls back to the Register section.
+          </p>
         </Section>
       </div>
     </div>

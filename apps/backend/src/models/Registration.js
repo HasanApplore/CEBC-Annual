@@ -18,6 +18,8 @@ const registrationSchema = new mongoose.Schema(
       default: "pending",
     },
     amount: { type: Number, default: 0 },
+    stripeSessionId: { type: String, default: "" },
+    discountCode: { type: String, default: "" },
   },
   { timestamps: true }
 );

@@ -68,6 +68,12 @@ const siteContentSchema = new mongoose.Schema(
     // form's payment step sends attendees here instead of collecting card
     // details directly, since there's no payment-gateway backend yet.
     paymentLink: { type: String, default: "" },
+    // "Become a Sponsor" CTA target — a sponsorship package PDF/URL.
+    sponsorPackageUrl: { type: String, default: "" },
+    // Ticket price for the Stripe Checkout Session created per registration.
+    // ticketCurrency is a lowercase ISO code (Stripe convention), e.g. "aed".
+    ticketPrice: { type: Number, default: 0 },
+    ticketCurrency: { type: String, default: "aed" },
   },
   { timestamps: true }
 );

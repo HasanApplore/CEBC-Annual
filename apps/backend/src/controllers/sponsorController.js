@@ -9,7 +9,7 @@ const base = crudFactory(Sponsor, "Sponsor");
 // `getAll` list from crudFactory instead.
 const getGroupedByTier = catchAsync(async (req, res) => {
   const sponsors = await Sponsor.find().sort({ order: 1, createdAt: 1 });
-  const grouped = { Platinum: [], Gold: [], Silver: [] };
+  const grouped = { Platinum: [], Gold: [], Silver: [], Bronze: [] };
   for (const sponsor of sponsors) {
     grouped[sponsor.tier]?.push(sponsor);
   }
