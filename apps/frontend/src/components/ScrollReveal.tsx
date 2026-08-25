@@ -1,5 +1,5 @@
 import { motion, type Variants } from "framer-motion";
-import type { ReactNode } from "react";
+import { Children, useRef, type ReactNode } from "react";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 
 interface ScrollRevealProps {
@@ -73,12 +73,24 @@ interface ScrollRevealGroupProps {
  * trigger; disabling it here left them stuck at the "hidden" (invisible)
  * state forever. Only the stagger cascade itself is removed for reduced
  * motion, not the reveal.
+ *
+ * `viewport.once` means this only ever fires once per mounted node. If the
+ * list is still empty (e.g. async data hasn't arrived yet) when it first
+ * scrolls into view, that single check happens against a zero-height
+ * container and the items that arrive moments later never get revealed —
+ * they render stuck at `opacity: 0` forever, present and clickable but
+ * invisible. Remounting via `key` the first time children go from none to
+ * some forces a fresh viewport check against the now-real content.
  */
 export function ScrollRevealGroup({ children, className }: ScrollRevealGroupProps) {
   const reduceMotion = usePrefersReducedMotion();
+  const hasContent = Children.count(children) > 0;
+  const everHadContentRef = useRef(false);
+  if (hasContent) everHadContentRef.current = true;
 
   return (
     <motion.div
+      key={everHadContentRef.current ? "populated" : "empty"}
       className={className}
       initial="hidden"
       whileInView="show"

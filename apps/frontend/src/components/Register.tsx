@@ -113,12 +113,30 @@ export function Register() {
   const [registrationId, setRegistrationId] = useState<string | null>(null);
   const [paymentError, setPaymentError] = useState("");
 
-  // Stripe redirects back here with ?payment=success after a completed checkout.
+  // Stripe redirects back here with ?payment=success after a completed
+  // checkout — this is a full page reload, so the in-progress form state
+  // (name/email typed earlier) is gone. name/email travel back in the
+  // redirect URL itself so the confirmation message can still show them.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("payment") === "success") {
+      setForm((f) => ({
+        ...f,
+        name: params.get("name") || f.name,
+        email: params.get("email") || f.email,
+      }));
       setShowForm(true);
       setStep("confirmation");
+    } else if (params.get("payment") === "cancelled") {
+      const reg = params.get("reg");
+      setShowForm(true);
+      if (reg) {
+        setRegistrationId(reg);
+        setStep("payment");
+        setPaymentError("Payment was cancelled — you can try again below.");
+      } else {
+        setStep("details");
+      }
     }
   }, []);
 
@@ -140,6 +158,12 @@ export function Register() {
     }
     if (!form.nationality.trim()) {
       nextErrors.nationality = "Nationality is required.";
+    }
+    if (!form.title.trim()) {
+      nextErrors.title = "Job title is required.";
+    }
+    if (!form.company.trim()) {
+      nextErrors.company = "Company is required.";
     }
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
@@ -238,8 +262,8 @@ export function Register() {
                   >
                     <Field label="Full Name" name="name" required value={form.name} error={errors.name} onChange={updateField} />
                     <Field label="Email" name="email" required type="email" value={form.email} error={errors.email} onChange={updateField} />
-                    <Field label="Job Title" name="title" value={form.title} onChange={updateField} />
-                    <Field label="Company" name="company" value={form.company} onChange={updateField} />
+                    <Field label="Job Title" name="title" required value={form.title} error={errors.title} onChange={updateField} />
+                    <Field label="Company" name="company" required value={form.company} error={errors.company} onChange={updateField} />
                     <Field
                       label="Country of Residency"
                       name="countryOfResidency"
