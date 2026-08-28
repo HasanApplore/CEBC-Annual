@@ -128,7 +128,10 @@ const sendTestBoomrangWebhook = catchAsync(async (req, res, next) => {
     discountCode: null,
     createdAt: new Date(),
   };
-  await sendBoomrangWebhook(sample, "registration.test");
+  // Boomrang's receiver validates event type against a fixed set — there is
+  // no separate "test" type, so a test send uses the real event type with
+  // obviously-fake data instead.
+  await sendBoomrangWebhook(sample, "registration.completed");
   res.status(200).json({ success: true, message: "Test webhook sent" });
 });
 
