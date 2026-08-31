@@ -49,10 +49,17 @@ export default function RegistrationsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    registrationService.getAll().then((data) => {
-      setRows(data);
-      setLoading(false);
-    });
+    registrationService
+      .getAll()
+      .then((data) => {
+        setRows(data);
+      })
+      .catch((err) => {
+        console.error("Failed to load registrations:", err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   const handleExport = () => {

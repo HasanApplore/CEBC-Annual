@@ -4,8 +4,8 @@ const registrationSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, trim: true, lowercase: true },
-    title: { type: String, default: "" },
-    company: { type: String, default: "" },
+    title: { type: String, required: true, trim: true },
+    company: { type: String, required: true, trim: true },
     countryOfResidency: { type: String, required: true, trim: true },
     nationality: { type: String, required: true, trim: true },
     phone: { type: String, default: "" },

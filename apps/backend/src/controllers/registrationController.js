@@ -11,6 +11,9 @@ const createRegistration = catchAsync(async (req, res, next) => {
   if (!countryOfResidency || !nationality) {
     return next(new AppError("Country of residency and nationality are required.", 400));
   }
+  if (!title || !company) {
+    return next(new AppError("Job title and company are required.", 400));
+  }
 
   const registration = await Registration.create({
     name,

@@ -3,6 +3,8 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const Registration = require("../models/Registration");
 const SiteContent = require("../models/SiteContent");
+const sendConfirmationEmail = require("../utils/sendConfirmationEmail");
+const { sendBoomrangWebhook } = require("../utils/sendBoomrangWebhook");
 
 // Public — called from the Register form's "payment" step once details are saved.
 // Creates a per-registration Stripe Checkout Session so the webhook can match
@@ -33,8 +35,11 @@ const createCheckoutSession = catchAsync(async (req, res, next) => {
     client_reference_id: registration._id.toString(),
     customer_email: registration.email,
     allow_promotion_codes: true,
-    success_url: `${process.env.FRONTEND_URL}/?payment=success`,
-    cancel_url: `${process.env.FRONTEND_URL}/?payment=cancelled`,
+    // name/email travel back in the redirect so the confirmation screen can
+    // show them — the SPA state (the form) is gone after this full-page
+    // round trip to Stripe and back.
+    success_url: `${process.env.FRONTEND_URL}/?payment=success&name=${encodeURIComponent(registration.name)}&email=${encodeURIComponent(registration.email)}#register`,
+    cancel_url: `${process.env.FRONTEND_URL}/?payment=cancelled&reg=${registration._id}#register`,
   });
 
   await Registration.updateOne({ _id: registration._id }, { stripeSessionId: session.id });
@@ -87,9 +92,8 @@ const stripeWebhook = async (req, res) => {
         }
 
         await Registration.updateOne({ _id: registration._id }, update);
-        // TODO once ready: push this registration to Boomrang's webhook and
-        // send the attendee confirmation email — both still pending client
-        // credentials (Boomrang endpoint/auth, SMTP access for info@cebcmena.com).
+        await sendConfirmationEmail(registration);
+        await sendBoomrangWebhook({ ...registration.toObject(), ...update });
       }
     }
   } catch (err) {
@@ -101,4 +105,34 @@ const stripeWebhook = async (req, res) => {
   res.status(200).json({ received: true });
 };
 
-module.exports = { createCheckoutSession, stripeWebhook };
+// Admin-only — lets Boomrang (or us) confirm the webhook integration works
+// without waiting for a real payment. Sends a redacted sample payload.
+const sendTestBoomrangWebhook = catchAsync(async (req, res, next) => {
+  if (!process.env.BOOMRANG_WEBHOOK_URL) {
+    return next(new AppError("BOOMRANG_WEBHOOK_URL is not configured yet.", 400));
+  }
+  const sample = {
+    _id: "000000000000000000000000",
+    toObject() {
+      return this;
+    },
+    name: "Test Attendee",
+    email: "test-webhook@cebcmena.com",
+    phone: "+971500000000",
+    company: "Sample Company",
+    title: "Sample Job Title",
+    countryOfResidency: "United Arab Emirates",
+    nationality: "Emirati",
+    paymentStatus: "paid",
+    amount: 0,
+    discountCode: null,
+    createdAt: new Date(),
+  };
+  // Boomrang's receiver validates event type against a fixed set — there is
+  // no separate "test" type, so a test send uses the real event type with
+  // obviously-fake data instead.
+  await sendBoomrangWebhook(sample, "registration.completed");
+  res.status(200).json({ success: true, message: "Test webhook sent" });
+});
+
+module.exports = { createCheckoutSession, stripeWebhook, sendTestBoomrangWebhook };

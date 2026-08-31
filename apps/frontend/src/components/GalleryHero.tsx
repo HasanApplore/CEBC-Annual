@@ -36,8 +36,21 @@ function Polaroid({ src, caption, rotate, delay, className = "" }: PolaroidProps
         aria-hidden
         className="absolute -right-[10px] top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-brand-bg"
       />
-      <div className="h-32 w-28 overflow-hidden rounded-sm bg-brand-bg sm:h-48 sm:w-40">
-        <img src={src} alt={caption} className="h-full w-full object-cover" />
+      <div className="flex h-32 w-28 items-center justify-center overflow-hidden rounded-sm bg-brand-bg sm:h-48 sm:w-40">
+        {src ? (
+          <img
+            src={src}
+            alt={caption || "Summit Moment"}
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              (e.currentTarget as HTMLElement).style.display = "none";
+            }}
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-brand-navy/5 p-2 text-center text-[10px] font-semibold text-brand-navy/60">
+            {caption || "CEBC Moment"}
+          </div>
+        )}
       </div>
       <span className="mono-label absolute bottom-2 left-2 right-2 truncate text-[9px] text-brand-navy/50">
         {caption}
@@ -116,6 +129,11 @@ export function GalleryHero() {
   const { eventInfo, galleryContent, galleryImages } = useSiteData();
   const reduceMotion = usePrefersReducedMotion();
 
+  const img0 = galleryImages?.[0] || { photo: "", caption: "Opening Keynote" };
+  const img1 = galleryImages?.[1] || { photo: "", caption: "Panel Discussion" };
+  const img2 = galleryImages?.[2] || { photo: "", caption: "Networking Breakfast" };
+  const img3 = galleryImages?.[3] || { photo: "", caption: "Delegate Floor" };
+
   return (
     <section className="relative overflow-hidden bg-brand-bg">
       {/* Full-bleed banner, extending behind the nav — same treatment as the home Hero,
@@ -150,10 +168,10 @@ export function GalleryHero() {
         <div className="mx-auto max-w-[1600px] px-5 sm:px-8">
           <div className="relative z-10 mx-auto -mt-14 flex flex-col items-center gap-8 px-2 pb-10 sm:-mt-20 sm:gap-10 sm:pb-14 lg:-mt-24 lg:flex-row lg:flex-wrap lg:items-center lg:justify-center lg:gap-x-8 lg:gap-y-12 xl:gap-x-10">
             <div className="flex gap-4 lg:-rotate-2">
-              <Polaroid src={galleryImages[0].photo} caption={galleryImages[0].caption} rotate={-6} delay={0.15} />
+              <Polaroid src={img0.photo} caption={img0.caption} rotate={-6} delay={0.15} />
               <Polaroid
-                src={galleryImages[1].photo}
-                caption={galleryImages[1].caption}
+                src={img1.photo}
+                caption={img1.caption}
                 rotate={4}
                 delay={0.25}
                 className="hidden sm:block"
@@ -164,13 +182,13 @@ export function GalleryHero() {
 
             <div className="flex gap-4 lg:rotate-2">
               <Polaroid
-                src={galleryImages[2].photo}
-                caption={galleryImages[2].caption}
+                src={img2.photo}
+                caption={img2.caption}
                 rotate={-4}
                 delay={0.6}
                 className="hidden sm:block"
               />
-              <Polaroid src={galleryImages[3].photo} caption={galleryImages[3].caption} rotate={6} delay={0.7} />
+              <Polaroid src={img3.photo} caption={img3.caption} rotate={6} delay={0.7} />
             </div>
           </div>
 

@@ -28,16 +28,31 @@ export default function PaymentsPage() {
   const [rowsLoading, setRowsLoading] = useState(true);
 
   useEffect(() => {
-    contentService.get().then((data) => {
-      setPaymentLink(data.paymentLink || "");
-      setTicketPrice(String(data.ticketPrice ?? 0));
-      setTicketCurrency(data.ticketCurrency || "aed");
-      setLinkLoading(false);
-    });
-    registrationService.getAll().then((data) => {
-      setRegistrations(data);
-      setRowsLoading(false);
-    });
+    contentService
+      .get()
+      .then((data) => {
+        setPaymentLink(data.paymentLink || "");
+        setTicketPrice(String(data.ticketPrice ?? 0));
+        setTicketCurrency(data.ticketCurrency || "aed");
+      })
+      .catch((err) => {
+        setLinkError(err instanceof Error ? err.message : "Failed to load payment settings");
+      })
+      .finally(() => {
+        setLinkLoading(false);
+      });
+
+    registrationService
+      .getAll()
+      .then((data) => {
+        setRegistrations(data);
+      })
+      .catch((err) => {
+        console.error("Failed to load registrations:", err);
+      })
+      .finally(() => {
+        setRowsLoading(false);
+      });
   }, []);
 
   const handleSaveLink = async () => {

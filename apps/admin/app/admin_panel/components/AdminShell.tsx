@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 import { authService, type AdminUser } from "../../../lib/services/auth";
 import { Sidebar } from "./Sidebar";
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
   const [user, setUser] = useState<AdminUser | null | undefined>(undefined);
 
   useEffect(() => {
@@ -15,27 +14,26 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       const currentUser = authService.getUser();
       if (!token || !currentUser) {
         setUser(null);
-        router.replace("/login");
+        window.location.replace("/login");
         return;
       }
       setUser(currentUser);
     } catch {
-      // Never leave `user` stuck at undefined — always resolve to a state
-      // that renders something, even if the session check itself failed.
       setUser(null);
-      router.replace("/login");
+      window.location.replace("/login");
     }
-  }, [router]);
+  }, []);
 
-  if (user === undefined) {
+  if (user === undefined || user === null) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#f4f5f7] text-sm text-gray-500">
-        Loading…
+      <div className="flex min-h-screen items-center justify-center bg-[#0f1b3d] text-white">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="animate-spin text-[#8fbf8e]" size={32} />
+          <p className="text-sm font-medium text-white/80">Checking authentication…</p>
+        </div>
       </div>
     );
   }
-
-  if (!user) return null;
 
   return (
     <div className="flex min-h-screen bg-[#f4f5f7]">
