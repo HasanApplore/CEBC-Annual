@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Loader2, Pencil, Plus, Trash2, X } from "lucide-react";
 import { MediaField } from "./MediaField";
+import { resolveBackendMediaUrl } from "../../../lib/api/client";
 
 export type FieldConfig = {
   key: string;
@@ -25,6 +26,7 @@ export function ResourceManager<T extends { _id?: string }>({
   fields,
   columns,
   emptyItem,
+  maxItems,
 }: {
   title: string;
   description: string;
@@ -32,6 +34,7 @@ export function ResourceManager<T extends { _id?: string }>({
   fields: FieldConfig[];
   columns: { key: string; label: string }[];
   emptyItem: Partial<T>;
+  maxItems?: number;
 }) {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
@@ -95,6 +98,8 @@ export function ResourceManager<T extends { _id?: string }>({
     setEditing((prev) => (prev ? { ...prev, [key]: value } : prev));
   };
 
+  const atLimit = maxItems !== undefined && items.length >= maxItems;
+
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
@@ -102,13 +107,22 @@ export function ResourceManager<T extends { _id?: string }>({
           <h1 className="text-xl font-bold text-[#0f1b3d]">{title}</h1>
           <p className="mt-0.5 text-sm text-gray-500">{description}</p>
         </div>
-        <button
-          onClick={openCreate}
-          className="flex items-center gap-1.5 rounded-lg bg-[#0f1b3d] px-4 py-2 text-sm font-medium text-white hover:bg-[#1c2f5b]"
-        >
-          <Plus size={16} />
-          Add
-        </button>
+        <div className="flex items-center gap-3">
+          {atLimit && (
+            <span className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-700">
+              Maximum {maxItems} images — delete one to add a new photo
+            </span>
+          )}
+          <button
+            onClick={openCreate}
+            disabled={atLimit}
+            title={atLimit ? `Maximum ${maxItems} items allowed` : undefined}
+            className="flex items-center gap-1.5 rounded-lg bg-[#0f1b3d] px-4 py-2 text-sm font-medium text-white hover:bg-[#1c2f5b] disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <Plus size={16} />
+            Add
+          </button>
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
@@ -139,11 +153,27 @@ export function ResourceManager<T extends { _id?: string }>({
             ) : (
               items.map((item) => (
                 <tr key={item._id} className="hover:bg-gray-50">
-                  {columns.map((c) => (
-                    <td key={c.key} className="max-w-xs truncate px-4 py-3 text-gray-700">
-                      {String((item as Record<string, unknown>)[c.key] ?? "")}
-                    </td>
-                  ))}
+                  {columns.map((c) => {
+                    const rawVal = (item as Record<string, unknown>)[c.key];
+                    const isMediaCol = c.key === "photo" || c.key === "logo" || c.key === "image";
+                    return (
+                      <td key={c.key} className="max-w-xs truncate px-4 py-3 text-gray-700">
+                        {isMediaCol ? (
+                          rawVal ? (
+                            <img
+                              src={resolveBackendMediaUrl(String(rawVal))}
+                              alt=""
+                              className="h-8 w-12 rounded object-cover border border-gray-200"
+                            />
+                          ) : (
+                            <span className="text-xs text-gray-400">No image</span>
+                          )
+                        ) : (
+                          String(rawVal ?? "")
+                        )}
+                      </td>
+                    );
+                  })}
                   <td className="px-4 py-3 text-right">
                     <button
                       onClick={() => openEdit(item)}

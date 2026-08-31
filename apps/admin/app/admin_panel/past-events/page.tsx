@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   ChevronDown,
   ChevronUp,
@@ -331,11 +332,24 @@ export default function PastEventsPage() {
 
   return (
     <div>
+      <div className="mb-4 flex items-center justify-between rounded-xl border border-indigo-100 bg-indigo-50/70 p-4 text-xs text-indigo-900">
+        <div>
+          <span className="font-semibold text-indigo-950">Looking to update the 4 Polaroid photos in the &quot;Moments from CEBC&quot; header?</span>
+          <p className="mt-0.5 text-indigo-700">Those top showcase photos are managed under the Moments gallery.</p>
+        </div>
+        <Link
+          href="/admin_panel/gallery"
+          className="shrink-0 rounded-lg bg-[#0f1b3d] px-3.5 py-2 font-medium text-white shadow-sm hover:bg-[#1c2f5b]"
+        >
+          Go to Moments from CEBC →
+        </Link>
+      </div>
+
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-[#0f1b3d]">Past Event</h1>
+          <h1 className="text-xl font-bold text-[#0f1b3d]">Past Editions (Year-by-Year)</h1>
           <p className="mt-0.5 text-sm text-gray-500">
-            Manage past annual summit editions — report, photos, and agenda for each year.
+            Manage past annual summit editions — report, photo galleries, and agendas for each year.
           </p>
         </div>
         <button

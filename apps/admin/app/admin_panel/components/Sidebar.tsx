@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   CalendarClock,
+  CalendarDays,
   CreditCard,
   FileText,
   Handshake,
@@ -22,7 +23,8 @@ const NAV_ITEMS = [
   { href: "/admin_panel/speakers", label: "Speakers", icon: Mic2 },
   { href: "/admin_panel/sponsors", label: "Sponsors", icon: Trophy },
   { href: "/admin_panel/partners", label: "Partners", icon: Handshake },
-  { href: "/admin_panel/past-events", label: "Past Event", icon: ImageIcon },
+  { href: "/admin_panel/gallery", label: "Moments from CEBC", icon: ImageIcon },
+  { href: "/admin_panel/past-events", label: "Past Editions", icon: CalendarDays },
   { href: "/admin_panel/registrations", label: "Registrations", icon: Users },
   { href: "/admin_panel/payments", label: "Payments", icon: CreditCard },
 ];
