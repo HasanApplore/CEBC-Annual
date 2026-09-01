@@ -7,7 +7,7 @@ import { SiteDataProvider } from './context/SiteDataContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/summit">
       <SiteDataProvider>
         <App />
       </SiteDataProvider>
