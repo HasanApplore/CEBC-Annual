@@ -7,7 +7,7 @@ const DISCOUNTS = [
   { code: "CEBCMEMBERS", percentOff: 100, name: "CEBC Members (100%)" },
   { code: "CEBCFF25", percentOff: 25, name: "Friends of CEBC (25%)" },
   { code: "CEBCVIP", percentOff: 100, name: "Invited VIP guests (100%)" },
-  { code: "EARLYBIRD20", percentOff: 20, name: "Early bird (20%)" },
+  { code: "EARLY20", percentOff: 20, name: "Early bird (20%)" },
   { code: "CEBCMEMBER50", percentOff: 50, name: "Member extra ticket (50%)" },
 ];
 
