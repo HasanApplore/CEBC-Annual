@@ -92,7 +92,7 @@ export default function PaymentsPage() {
         </h2>
         <p className="mb-4 text-sm text-gray-500">
           Charged on Stripe Checkout when an attendee completes registration. Discount codes
-          (CEBCMEMBERS, CEBCFF25, CEBCVIP, EARLYBIRD20, CEBCMEMBER50) are entered by the attendee
+          (CEBCMEMBERS, CEBCFF25, CEBCVIP, EARLY20, CEBCMEMBER50) are entered by the attendee
           on Stripe's checkout page and are managed directly in Stripe, not here.
         </p>
         {linkLoading ? (
