@@ -211,7 +211,14 @@ export interface Sponsor {
   website: string;
 }
 
-export type SponsorTier = "Platinum" | "Gold" | "Silver" | "Bronze";
+export type SponsorTier =
+  | "Platinum"
+  | "Gold"
+  | "Silver"
+  | "Sustainability Impact Partner"
+  | "Bronze"
+  | "Carbon Neutral Partner"
+  | (string & {});
 
 // Generates a simple lettermark "logo" via ui-avatars.com so sponsor/partner
 // cards preview with real imagery instead of empty tiles. Swap `logo` for a
@@ -221,7 +228,7 @@ function placeholderLogo(label: string, bg: string) {
 }
 
 // Expand each tier's array as sponsors are confirmed — layout adapts automatically.
-export const sponsors: Record<SponsorTier, Sponsor[]> = {
+export const sponsors: Record<string, Sponsor[]> = {
   Platinum: Array.from({ length: 2 }, (_, i) => ({
     name: `Platinum Sponsor ${i + 1}`,
     logo: placeholderLogo(`Platinum Sponsor ${i + 1}`, "004AAD"),
@@ -243,7 +250,9 @@ export const sponsors: Record<SponsorTier, Sponsor[]> = {
       "Sponsor details to be announced. This placeholder card will be replaced with confirmed partner branding and copy.",
     website: "",
   })),
+  "Sustainability Impact Partner": [],
   Bronze: [],
+  "Carbon Neutral Partner": [],
 };
 
 export interface Partner {

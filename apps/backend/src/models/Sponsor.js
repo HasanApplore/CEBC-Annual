@@ -6,7 +6,7 @@ const sponsorSchema = new mongoose.Schema(
     logo: { type: String, default: "" },
     description: { type: String, default: "" },
     website: { type: String, default: "" },
-    tier: { type: String, enum: ["Platinum", "Gold", "Silver", "Bronze"], required: true },
+    tier: { type: String, required: true, trim: true },
     order: { type: Number, default: 0 },
   },
   { timestamps: true }

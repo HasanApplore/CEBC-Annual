@@ -11,7 +11,6 @@ import type {
   Partner,
   Speaker,
   Sponsor,
-  SponsorTier,
 } from "../data/summit";
 
 interface SiteContentApi {
@@ -35,7 +34,7 @@ interface SiteContentApi {
 export interface SiteData extends SiteContentApi {
   agendaItems: AgendaItem[];
   speakers: Speaker[];
-  sponsors: Record<SponsorTier, Sponsor[]>;
+  sponsors: Record<string, Sponsor[]>;
   partners: Partner[];
   galleryImages: GalleryImage[];
 }
@@ -99,10 +98,10 @@ function resolveSpeakerMedia(items: Speaker[]): Speaker[] {
   return items.map((item) => ({ ...item, photo: resolveMediaUrl(item.photo) }));
 }
 
-function resolveSponsorMedia(sponsors: Record<SponsorTier, Sponsor[]>): Record<SponsorTier, Sponsor[]> {
-  const resolved = {} as Record<SponsorTier, Sponsor[]>;
-  for (const tier of Object.keys(sponsors) as SponsorTier[]) {
-    resolved[tier] = sponsors[tier].map((s) => ({ ...s, logo: resolveMediaUrl(s.logo) }));
+function resolveSponsorMedia(sponsors: Record<string, Sponsor[]>): Record<string, Sponsor[]> {
+  const resolved = {} as Record<string, Sponsor[]>;
+  for (const tier of Object.keys(sponsors || {})) {
+    resolved[tier] = (sponsors[tier] || []).map((s) => ({ ...s, logo: resolveMediaUrl(s.logo) }));
   }
   return resolved;
 }
@@ -128,7 +127,7 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
         apiGet<SiteContentApi>("/content"),
         apiGet<AgendaItem[]>("/agenda"),
         apiGet<Speaker[]>("/speakers"),
-        apiGet<Record<SponsorTier, Sponsor[]>>("/sponsors/grouped"),
+        apiGet<Record<string, Sponsor[]>>("/sponsors/grouped"),
         apiGet<Partner[]>("/partners"),
         apiGet<GalleryImage[]>("/gallery"),
       ]);
