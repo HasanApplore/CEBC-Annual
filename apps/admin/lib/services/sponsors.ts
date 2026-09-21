@@ -6,7 +6,7 @@ export interface Sponsor {
   logo: string;
   description: string;
   website: string;
-  tier: "Platinum" | "Gold" | "Silver" | "Bronze";
+  tier: string;
   order: number;
 }
 

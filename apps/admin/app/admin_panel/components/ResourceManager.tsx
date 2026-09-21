@@ -10,6 +10,7 @@ export type FieldConfig = {
   label: string;
   type: "text" | "textarea" | "number" | "media" | "select" | "stringArray";
   options?: string[];
+  allowCustom?: boolean;
 };
 
 interface ResourceService<T> {
@@ -42,6 +43,7 @@ export function ResourceManager<T extends { _id?: string }>({
   const [editing, setEditing] = useState<Partial<T> | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [customInputActive, setCustomInputActive] = useState<Record<string, boolean>>({});
 
   const load = async () => {
     setLoading(true);
@@ -59,12 +61,14 @@ export function ResourceManager<T extends { _id?: string }>({
 
   const openCreate = () => {
     setEditing({ ...emptyItem });
+    setCustomInputActive({});
     setError("");
     setModalOpen(true);
   };
 
   const openEdit = (item: T) => {
     setEditing({ ...item });
+    setCustomInputActive({});
     setError("");
     setModalOpen(true);
   };
@@ -234,24 +238,70 @@ export function ResourceManager<T extends { _id?: string }>({
                   );
                 }
                 if (field.type === "select") {
+                  const isCustom = Boolean(field.allowCustom && customInputActive[field.key]);
+                  const rawOptions = field.options || [];
+                  const existingItemOptions = items
+                    .map((it) => (it as Record<string, unknown>)[field.key])
+                    .filter((v): v is string => typeof v === "string" && v.trim().length > 0);
+                  const dynamicOptions = Array.from(new Set([...rawOptions, ...existingItemOptions]));
+
                   return (
-                    <label key={field.key} className="block text-left text-sm">
-                      <span className="font-medium text-gray-700">{field.label}</span>
-                      <select
-                        value={(value as string) ?? ""}
-                        onChange={(e) => setField(field.key, e.target.value)}
-                        className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#0f1b3d]"
-                      >
-                        <option value="" disabled>
-                          Select…
-                        </option>
-                        {field.options?.map((opt) => (
-                          <option key={opt} value={opt}>
-                            {opt}
+                    <div key={field.key} className="block text-left text-sm">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-gray-700">{field.label}</span>
+                        {field.allowCustom && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCustomInputActive((prev) => ({ ...prev, [field.key]: !isCustom }));
+                            }}
+                            className="text-xs font-semibold text-[#004aad] hover:underline"
+                          >
+                            {isCustom ? "Choose from existing" : `+ Add new ${field.label.toLowerCase()}`}
+                          </button>
+                        )}
+                      </div>
+
+                      {isCustom ? (
+                        <div className="mt-1">
+                          <input
+                            type="text"
+                            placeholder={`Enter new ${field.label.toLowerCase()} name...`}
+                            value={(value as string) ?? ""}
+                            onChange={(e) => setField(field.key, e.target.value)}
+                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#0f1b3d]"
+                            autoFocus
+                          />
+                        </div>
+                      ) : (
+                        <select
+                          value={(value as string) ?? ""}
+                          onChange={(e) => {
+                            if (field.allowCustom && e.target.value === "__add_new__") {
+                              setCustomInputActive((prev) => ({ ...prev, [field.key]: true }));
+                              setField(field.key, "");
+                            } else {
+                              setField(field.key, e.target.value);
+                            }
+                          }}
+                          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#0f1b3d]"
+                        >
+                          <option value="" disabled>
+                            Select…
                           </option>
-                        ))}
-                      </select>
-                    </label>
+                          {dynamicOptions.map((opt) => (
+                            <option key={opt} value={opt}>
+                              {opt}
+                            </option>
+                          ))}
+                          {field.allowCustom && (
+                            <option value="__add_new__" className="font-semibold text-[#004aad]">
+                              + Add new {field.label.toLowerCase()}…
+                            </option>
+                          )}
+                        </select>
+                      )}
+                    </div>
                   );
                 }
                 if (field.type === "stringArray") {

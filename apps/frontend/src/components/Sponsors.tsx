@@ -5,7 +5,7 @@ import {
   useSpring,
 } from "framer-motion";
 import { type MouseEvent, useState } from "react";
-import type { Sponsor, SponsorTier } from "../data/summit";
+import type { Sponsor } from "../data/summit";
 import { useSiteData } from "../context/SiteDataContext";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { ArrowButton } from "./ArrowButton";
@@ -13,11 +13,22 @@ import { DetailModal, type DetailModalEntry } from "./DetailModal";
 import { Eyebrow } from "./Eyebrow";
 import { ScrollReveal, ScrollRevealGroup, staggerItemVariants } from "./ScrollReveal";
 
-const tiers: { key: SponsorTier; cardSize: string; chipSize: string }[] = [
-  { key: "Platinum", cardSize: "sm:grid-cols-2", chipSize: "h-20 w-20 sm:h-24 sm:w-24" },
-  { key: "Gold", cardSize: "sm:grid-cols-3", chipSize: "h-16 w-16 sm:h-20 sm:w-20" },
-  { key: "Silver", cardSize: "sm:grid-cols-3", chipSize: "h-14 w-14 sm:h-16 sm:w-16" },
-  { key: "Bronze", cardSize: "sm:grid-cols-3", chipSize: "h-14 w-14 sm:h-16 sm:w-16" },
+const DEFAULT_TIER_CONFIG: Record<string, { cardSize: string; chipSize: string }> = {
+  Platinum: { cardSize: "sm:grid-cols-2", chipSize: "h-20 w-20 sm:h-24 sm:w-24" },
+  Gold: { cardSize: "sm:grid-cols-3", chipSize: "h-16 w-16 sm:h-20 sm:w-20" },
+  Silver: { cardSize: "sm:grid-cols-3", chipSize: "h-14 w-14 sm:h-16 sm:w-16" },
+  "Sustainability Impact Partner": { cardSize: "sm:grid-cols-3", chipSize: "h-14 w-14 sm:h-16 sm:w-16" },
+  Bronze: { cardSize: "sm:grid-cols-3", chipSize: "h-14 w-14 sm:h-16 sm:w-16" },
+  "Carbon Neutral Partner": { cardSize: "sm:grid-cols-3", chipSize: "h-14 w-14 sm:h-16 sm:w-16" },
+};
+
+const ORDERED_TIERS = [
+  "Platinum",
+  "Gold",
+  "Silver",
+  "Sustainability Impact Partner",
+  "Bronze",
+  "Carbon Neutral Partner",
 ];
 
 function SponsorCard({
@@ -123,6 +134,18 @@ export function Sponsors() {
   const [selected, setSelected] = useState<DetailModalEntry | null>(null);
   const reduceMotion = usePrefersReducedMotion();
 
+  const allTierKeys = Array.from(
+    new Set([...ORDERED_TIERS, ...Object.keys(sponsors || {})])
+  );
+
+  const displayTiers = allTierKeys
+    .filter((key) => (sponsors[key]?.length ?? 0) > 0)
+    .map((key) => ({
+      key,
+      cardSize: DEFAULT_TIER_CONFIG[key]?.cardSize || "sm:grid-cols-3",
+      chipSize: DEFAULT_TIER_CONFIG[key]?.chipSize || "h-14 w-14 sm:h-16 sm:w-16",
+    }));
+
   return (
     <section id="sponsors" className="relative overflow-hidden bg-white py-24">
       <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
@@ -137,7 +160,7 @@ export function Sponsors() {
         </ScrollReveal>
 
         <div className="mt-16 flex flex-col gap-16">
-          {tiers.map(({ key, cardSize, chipSize }) => (
+          {displayTiers.map(({ key, cardSize, chipSize }) => (
             <div
               key={key}
               className="sm:grid sm:grid-cols-[9rem_1fr] sm:items-center sm:gap-10 md:grid-cols-[11rem_1fr]"
@@ -154,7 +177,7 @@ export function Sponsors() {
 
               {/* Right side — sponsor cards */}
               <ScrollRevealGroup className={`grid grid-cols-1 gap-5 ${cardSize}`}>
-                {sponsors[key].map((sponsor, i) => {
+                {(sponsors[key] || []).map((sponsor, i) => {
                   const layoutId = `sponsor-${key}-${i}`;
                   return (
                     <SponsorCard
@@ -164,7 +187,11 @@ export function Sponsors() {
                       layoutId={layoutId}
                       reduceMotion={reduceMotion}
                       onSelect={() =>
-                        setSelected({ ...sponsor, eyebrow: `${key} Sponsor`, layoutId })
+                        setSelected({
+                          ...sponsor,
+                          eyebrow: key.toLowerCase().includes("partner") ? key : `${key} Sponsor`,
+                          layoutId,
+                        })
                       }
                     />
                   );
