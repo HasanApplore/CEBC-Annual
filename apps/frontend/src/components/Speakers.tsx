@@ -1,11 +1,14 @@
 import { motion } from "framer-motion";
 import { Link2, User } from "lucide-react";
 import { useSiteData } from "../context/SiteDataContext";
+import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import { Eyebrow } from "./Eyebrow";
-import { ScrollReveal, ScrollRevealGroup, staggerItemVariants } from "./ScrollReveal";
+import { ScrollReveal } from "./ScrollReveal";
 
 export function Speakers() {
   const { speakers } = useSiteData();
+  const reduceMotion = usePrefersReducedMotion();
+
   return (
     <section id="speakers" className="bg-brand-bg py-24">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -19,13 +22,15 @@ export function Speakers() {
           </p>
         </ScrollReveal>
 
-        <ScrollRevealGroup className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {speakers.map((speaker, i) => (
             <motion.div
-              key={i}
-              variants={staggerItemVariants}
-              whileHover={{ y: -8, scale: 1.02 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              key={speaker._id || `${speaker.name}-${i}`}
+              initial={reduceMotion ? undefined : { opacity: 0, y: 24 }}
+              whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.08 }}
+              transition={{ duration: 0.4, delay: reduceMotion ? 0 : (i % 6) * 0.08, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={reduceMotion ? undefined : { y: -8, scale: 1.02 }}
               className="group overflow-hidden rounded-lg border border-brand-navy/10 bg-white shadow-sm transition-all duration-300 hover:border-brand-green/40 hover:shadow-xl hover:shadow-brand-green/10"
             >
               <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-brand-navy to-brand-blue">
@@ -74,7 +79,7 @@ export function Speakers() {
               </div>
             </motion.div>
           ))}
-        </ScrollRevealGroup>
+        </div>
       </div>
     </section>
   );
