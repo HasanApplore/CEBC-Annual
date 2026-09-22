@@ -127,6 +127,7 @@ export const aboutContent = {
 };
 
 export interface AgendaItem {
+  _id?: string;
   time: string;
   title: string;
   detail: string;
@@ -185,6 +186,7 @@ export const agendaItems: AgendaItem[] = [
 ];
 
 export interface Speaker {
+  _id?: string;
   name: string;
   title: string;
   org: string;

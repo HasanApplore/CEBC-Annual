@@ -33,16 +33,16 @@ function AgendaRow({ item, index, reduceMotion }: AgendaRowProps) {
         reduceMotion ? undefined : { opacity: 0, x: isRight ? 24 : -24 }
       }
       whileInView={reduceMotion ? undefined : { opacity: 1, x: 0 }}
-      viewport={{ once: true, amount: 0.5 }}
-      transition={{ duration: 0.5, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, amount: 0.08 }}
+      transition={{ duration: 0.45, delay: reduceMotion ? 0 : (index % 3) * 0.1, ease: [0.22, 1, 0.36, 1] }}
     >
       {/* Timeline dot — centered precisely on the line at every breakpoint,
           brightens and grows whenever the card beside it is hovered */}
       <motion.span
         initial={reduceMotion ? undefined : { scale: 0 }}
         whileInView={reduceMotion ? undefined : { scale: 1 }}
-        viewport={{ once: true, amount: 0.5 }}
-        transition={{ duration: 0.4, delay: index * 0.12 + 0.15, type: "spring", stiffness: 300, damping: 18 }}
+        viewport={{ once: true, amount: 0.08 }}
+        transition={{ duration: 0.35, delay: reduceMotion ? 0 : (index % 3) * 0.1 + 0.1, type: "spring", stiffness: 300, damping: 18 }}
         className="absolute -left-8 top-1 z-10 flex h-4 w-4 items-center justify-center rounded-full border-2 border-brand-green bg-white transition-all duration-300 group-hover:scale-125 group-hover:border-brand-blue group-hover:shadow-[0_0_16px_4px_rgba(0,74,173,0.35)] sm:relative sm:left-auto sm:top-auto sm:col-start-2 sm:row-start-1 sm:mx-auto"
       >
         {!reduceMotion && (
@@ -50,7 +50,7 @@ function AgendaRow({ item, index, reduceMotion }: AgendaRowProps) {
             aria-hidden
             className="absolute inset-0 rounded-full border-2 border-brand-green"
             animate={{ scale: [1, 2.1, 1], opacity: [0.6, 0, 0.6] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: index * 0.3 }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: (index % 3) * 0.2 }}
           />
         )}
         <span className="h-1.5 w-1.5 rounded-full bg-brand-green transition-colors duration-300 group-hover:bg-brand-blue" />
@@ -66,8 +66,8 @@ function AgendaRow({ item, index, reduceMotion }: AgendaRowProps) {
             }`}
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.4, delay: index * 0.12 + 0.3, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true, amount: 0.08 }}
+            transition={{ duration: 0.35, delay: reduceMotion ? 0 : (index % 3) * 0.1 + 0.2, ease: [0.22, 1, 0.36, 1] }}
           />
         )}
       </motion.span>
@@ -88,14 +88,18 @@ function AgendaRow({ item, index, reduceMotion }: AgendaRowProps) {
         />
 
         {/* Image banner — bleeds to the card's edges via negative margin, title/time overlaid on top */}
-        <div className="relative -m-5 mb-4 h-36 overflow-hidden sm:-m-6 sm:mb-5 sm:h-40">
-          <img
-            src={item.image}
-            alt=""
-            role="presentation"
-            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-navy-dark/85 via-brand-navy-dark/25 to-brand-navy-dark/10" />
+        <div className="relative -m-5 mb-4 h-36 overflow-hidden bg-gradient-to-br from-brand-navy via-[#152347] to-[#1c355e] sm:-m-6 sm:mb-5 sm:h-40">
+          {item.image ? (
+            <img
+              src={item.image}
+              alt=""
+              role="presentation"
+              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-brand-navy via-[#152347] to-[#1c355e]" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-navy-dark/90 via-brand-navy-dark/30 to-brand-navy-dark/10" />
 
           <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-3">
             <span className="mono-label flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold text-white backdrop-blur-sm">
@@ -118,29 +122,33 @@ function AgendaRow({ item, index, reduceMotion }: AgendaRowProps) {
           </h3>
         </div>
 
-        <ul className="relative mt-3 space-y-1.5">
-          {item.highlights.map((highlight, hi) => (
-            <motion.li
-              key={hi}
-              initial={reduceMotion ? undefined : { opacity: 0, x: isRight ? 10 : -10 }}
-              whileInView={reduceMotion ? undefined : { opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{
-                duration: 0.35,
-                delay: index * 0.12 + 0.35 + hi * 0.08,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="flex items-start gap-2 text-sm text-brand-navy/70"
-            >
-              <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-brand-green" />
-              {highlight}
-            </motion.li>
-          ))}
-        </ul>
+        {item.highlights && item.highlights.length > 0 && (
+          <ul className="relative mt-3 space-y-1.5">
+            {item.highlights.map((highlight, hi) => (
+              <motion.li
+                key={hi}
+                initial={reduceMotion ? undefined : { opacity: 0, x: isRight ? 10 : -10 }}
+                whileInView={reduceMotion ? undefined : { opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.08 }}
+                transition={{
+                  duration: 0.3,
+                  delay: reduceMotion ? 0 : (index % 3) * 0.08 + 0.15 + hi * 0.04,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="flex items-start gap-2 text-sm text-brand-navy/70"
+              >
+                <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-brand-green" />
+                {highlight}
+              </motion.li>
+            ))}
+          </ul>
+        )}
 
-        <p className="relative mt-3 border-t border-brand-navy/10 pt-3 text-sm italic text-brand-navy/50">
-          {item.detail}
-        </p>
+        {item.detail ? (
+          <p className="relative mt-3 border-t border-brand-navy/10 pt-3 text-sm italic text-brand-navy/50">
+            {item.detail}
+          </p>
+        ) : null}
       </motion.div>
     </motion.div>
   );
@@ -189,7 +197,12 @@ export function Agenda() {
 
           <div className="flex flex-col gap-10 sm:gap-14">
             {agendaItems.map((item, i) => (
-              <AgendaRow key={i} item={item} index={i} reduceMotion={reduceMotion} />
+              <AgendaRow
+                key={item._id || `${item.time}-${i}`}
+                item={item}
+                index={i}
+                reduceMotion={reduceMotion}
+              />
             ))}
           </div>
         </div>
